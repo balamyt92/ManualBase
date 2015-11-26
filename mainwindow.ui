@@ -50,17 +50,17 @@
        <item row="0" column="0" colspan="2">
         <widget class="QListView" name="MarksListView"/>
        </item>
-       <item row="1" column="0">
+       <item row="1" column="1">
         <widget class="QPushButton" name="markDel">
          <property name="text">
-          <string>Добавить</string>
+          <string>Удалить</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item row="1" column="0">
         <widget class="QPushButton" name="markAdd">
          <property name="text">
-          <string>Удалить</string>
+          <string>Добавить</string>
          </property>
         </widget>
        </item>
@@ -77,14 +77,14 @@
         <widget class="QListView" name="ModelsListView"/>
        </item>
        <item row="1" column="0">
-        <widget class="QPushButton" name="modelDel">
+        <widget class="QPushButton" name="ModelAdd">
          <property name="text">
-          <string>Дoбавить</string>
+          <string>Добавить</string>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QPushButton" name="ModelAdd">
+        <widget class="QPushButton" name="modelDel">
          <property name="text">
           <string>Удалить</string>
          </property>
@@ -102,15 +102,15 @@
        <item row="0" column="0" colspan="2">
         <widget class="QListView" name="ManualsListView"/>
        </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="manDel">
+       <item row="2" column="0">
+        <widget class="QPushButton" name="manAdd">
          <property name="text">
           <string>Добавить</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="manAdd">
+       <item row="2" column="1">
+        <widget class="QPushButton" name="manDel">
          <property name="text">
           <string>Удалить</string>
          </property>
@@ -127,7 +127,7 @@
      <x>0</x>
      <y>0</y>
      <width>1015</width>
-     <height>21</height>
+     <height>27</height>
     </rect>
    </property>
   </widget>

@@ -8,6 +8,7 @@
 #include <QtSql/QSqlQuery>
 #include <QDebug>
 #include <QMessageBox>
+#include <QInputDialog>
 
 namespace Ui {
 class MainWindow;
@@ -22,9 +23,18 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_SectionsListView_doubleClicked(const QModelIndex &index);
+    void on_SectionsListView_clicked(const QModelIndex &index);
+    void on_MarksListView_clicked(const QModelIndex &index);
+    void on_markDel_clicked();
+    void on_markAdd_clicked();
 
-    void on_MarksListView_doubleClicked(const QModelIndex &index);
+    void on_sectionAdd_clicked();
+
+    void on_sectionDel_clicked();
+
+    void on_ModelAdd_clicked();
+
+    void on_modelDel_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -33,6 +43,10 @@ private:
     QSqlTableModel      *markModel;
     QSqlTableModel      *modelModel;
     QSqlTableModel      *manModel;
+    QString             currenSection;
+    QString             currentMark;
+    QString             currentModel;
+
 };
 
 #endif // MAINWINDOW_H
