@@ -4,11 +4,14 @@
 #include <QMainWindow>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlTableModel>
+#include <QtSql/QSqlRelationalTableModel>
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
 #include <QDebug>
 #include <QMessageBox>
 #include <QInputDialog>
+
+#include "manualdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -36,16 +39,24 @@ private slots:
 
     void on_modelDel_clicked();
 
+    void on_ModelsListView_clicked(const QModelIndex &index);
+
+    void on_ManualsListView_doubleClicked(const QModelIndex &index);
+
+    void on_manAdd_clicked();
+
+    void on_manDel_clicked();
+
 private:
-    Ui::MainWindow *ui;
-    QSqlDatabase        *db;
-    QSqlTableModel      *sectionModel;
-    QSqlTableModel      *markModel;
-    QSqlTableModel      *modelModel;
-    QSqlTableModel      *manModel;
-    QString             currenSection;
-    QString             currentMark;
-    QString             currentModel;
+    Ui::MainWindow              *ui;
+    QSqlDatabase                *db;
+    QSqlTableModel              *sectionModel;
+    QSqlTableModel              *markModel;
+    QSqlTableModel              *modelModel;
+    QSqlRelationalTableModel    *manModel;
+    QString                     currenSection;
+    QString                     currentMark;
+    QString                     currentModel;
 
 };
 

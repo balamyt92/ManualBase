@@ -47,6 +47,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->groupBox_3->setEnabled(false);
 
     // Мануалы
+    manModel = new QSqlRelationalTableModel(this);
+    manModel->setTable("manualtomodel");
+    manModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    manModel->setRelation(0, QSqlRelation("manual", "ID", "Name"));
+    ui->ManualsListView->setModel(manModel);
+    ui->ManualsListView->setModelColumn(0);
+    ui->ManualsListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->groupBox_4->setEnabled(false);
 }
 
@@ -221,4 +228,36 @@ void MainWindow::on_modelDel_clicked()
         }
         modelModel->select();
     }
+}
+
+void MainWindow::on_ModelsListView_clicked(const QModelIndex &index)
+{
+    if(!index.isValid())
+        return;
+    ui->groupBox_4->setEnabled(true);
+
+    currentModel = modelModel->index(index.row(), 0).data().toString();
+    manModel->setFilter("ID_Model=" + currentModel);
+    if(!manModel->select()) {
+        QString err = tr("Не могу считать список мануалов! <br>") + manModel->lastError().text();
+        QMessageBox::critical(this, tr("Ошибка!"), err);
+    }
+}
+
+void MainWindow::on_ManualsListView_doubleClicked(const QModelIndex &index)
+{
+
+}
+
+void MainWindow::on_manAdd_clicked()
+{
+    ManualDialog *md = new ManualDialog(this);
+    md->setCurrentModel(currentModel);
+    md->exec();
+    delete md;
+}
+
+void MainWindow::on_manDel_clicked()
+{
+
 }
