@@ -7,6 +7,7 @@
 #include <QDataWidgetMapper>
 #include <QSqlTableModel>
 #include <QSqlError>
+#include <QSqlQuery>
 #include <QDebug>
 
 namespace Ui {
@@ -20,13 +21,17 @@ class ManualDialog : public QDialog
 public:
     explicit ManualDialog(QWidget *parent = 0);
     ~ManualDialog();
-    void setCurrentModel(QString model);
+    void addManual(QString id_model);
+    void saveManual();
+    void editManual(QString id_manual, QString id_model);
+    void updateManual();
 
 private:
     Ui::ManualDialog  *ui;
     QValidator        *genValid;
     QDataWidgetMapper *mapper;
     QSqlTableModel    *model;
+    QString           currentModel;
 };
 
 #endif // MANUALDIALOG_H

@@ -48,9 +48,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Мануалы
     manModel = new QSqlRelationalTableModel(this);
+    manModel->setJoinMode(QSqlRelationalTableModel::LeftJoin);
     manModel->setTable("manualtomodel");
     manModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    manModel->setRelation(0, QSqlRelation("manual", "ID", "Name"));
+    manModel->setRelation(0, QSqlRelation("manual", "ID", "Name, ID"));
     ui->ManualsListView->setModel(manModel);
     ui->ManualsListView->setModelColumn(0);
     ui->ManualsListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -246,18 +247,66 @@ void MainWindow::on_ModelsListView_clicked(const QModelIndex &index)
 
 void MainWindow::on_ManualsListView_doubleClicked(const QModelIndex &index)
 {
-
+    QString id_man = manModel->index(index.row(), 1).data().toString();
+    ManualDialog *md = new ManualDialog(this);
+    md->editManual(id_man, currentModel);
+    if(md->exec() == QDialog::Accepted)
+    {
+        md->updateManual();
+        manModel->select();
+    }
+    delete md;
 }
 
 void MainWindow::on_manAdd_clicked()
 {
     ManualDialog *md = new ManualDialog(this);
-    md->setCurrentModel(currentModel);
-    md->exec();
+    md->addManual(currentModel);
+    if(md->exec() == QDialog::Accepted)
+    {
+        md->saveManual();
+        manModel->select();
+    }
     delete md;
 }
 
 void MainWindow::on_manDel_clicked()
 {
+    QModelIndex index = ui->ManualsListView->currentIndex();
+    if(!index.isValid())
+        return;
 
+    QString id_man = manModel->index(index.row(), 1).data().toString();
+
+    QMessageBox msg;
+    msg.setIcon(QMessageBox::Warning);
+    msg.setText(tr("Удаление"));
+    msg.setInformativeText(tr("Вы действительно хотите удалить мануал ") + index.data().toString() + "?");
+    msg.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msg.setDefaultButton(QMessageBox::Cancel);
+    int ret = msg.exec();
+    if(ret == QMessageBox::Ok) {
+
+        qDebug() << id_man;
+        qDebug() << currentModel;
+
+        QSqlQuery query;
+        query.prepare("DELETE FROM manualtomodel WHERE ID_Man=" + id_man + " AND ID_Model=" + currentModel);
+        if(!query.exec()) {
+            goto ERR;
+        }
+
+        query.prepare("DELETE FROM manual WHERE ID=" + id_man);
+        if(!query.exec())
+        {
+            ERR:
+            msg.setIcon(QMessageBox::Critical);
+            msg.setText(tr("Ошибка"));
+            msg.setInformativeText("Не могу удалить!\n"
+                                   + query.lastError().text());
+            msg.setDefaultButton(QMessageBox::Ok);
+            msg.exec();
+        }
+        manModel->select();
+    }
 }
