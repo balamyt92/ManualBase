@@ -9,6 +9,10 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QDebug>
+#include <QFileDialog>
+#include <QPixmap>
+#include <QImage>
+#include <QGraphicsScene>
 
 namespace Ui {
 class ManualDialog;
@@ -25,13 +29,26 @@ public:
     void saveManual();
     void editManual(QString id_manual, QString id_model);
     void updateManual();
+    QString getFoto() { return fileName; }
+    bool isEditFoto() { return editFoto; }
+
+    QString getIDLastAddManual() {
+        return model->index(model->rowCount() - 1, 0).data().toString();
+    }
+
+    void setPathToFile(QString path);
+
+private slots:
+    void on_selectFile_clicked();
 
 private:
     Ui::ManualDialog  *ui;
     QValidator        *genValid;
     QDataWidgetMapper *mapper;
     QSqlTableModel    *model;
-    QString           currentModel;
+    QString            currentModel;
+    QString            fileName;
+    bool               editFoto;
 };
 
 #endif // MANUALDIALOG_H

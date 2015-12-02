@@ -10,6 +10,8 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QDir>
+#include <QFile>
 
 #include "manualdialog.h"
 

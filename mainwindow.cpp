@@ -7,14 +7,27 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // подключение к базе
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("base.db3");
     if(!db.open()) {
         QString err = tr("Не могу подключиться к базе! <br>") + db.lastError().text();
         QMessageBox::critical(this, tr("Ошибка!"), err);
     }
-
+    // включаем внешние ключи в базе
     QSqlQuery query("PRAGMA foreign_keys = ON");
+
+    // Проверяем если папка для фоток
+    QDir foto("foto");
+    if(!foto.exists()) {
+        QMessageBox::information(this, tr("Нет папки фото!")
+                                 , tr("Она будет создана! "
+                                      "Но это значит что база пуста "
+                                      "или отсутсвую фото тодя мануалов!"));
+        foto.cdUp();
+        foto.mkdir("foto");
+        foto.cd("foto");
+    }
 
     // Разделы
     sectionModel = new QSqlTableModel(this);
@@ -254,6 +267,12 @@ void MainWindow::on_ManualsListView_doubleClicked(const QModelIndex &index)
     {
         md->updateManual();
         manModel->select();
+
+        if(md->isEditFoto()) {
+            QFile::remove(QDir::currentPath() + "/foto/" + id_man + ".jpg");
+            QFile::copy(md->getFoto(), QDir::currentPath() + "/foto/" + id_man + ".jpg");
+            md->setPathToFile("foto/" + id_man + ".jpg");
+        }
     }
     delete md;
 }
@@ -266,6 +285,9 @@ void MainWindow::on_manAdd_clicked()
     {
         md->saveManual();
         manModel->select();
+        QFile::copy(md->getFoto(), QDir::currentPath() + "/foto/" + md->getIDLastAddManual() + ".jpg");
+
+        md->setPathToFile("foto/" + md->getIDLastAddManual() + ".jpg");
     }
     delete md;
 }
@@ -286,10 +308,6 @@ void MainWindow::on_manDel_clicked()
     msg.setDefaultButton(QMessageBox::Cancel);
     int ret = msg.exec();
     if(ret == QMessageBox::Ok) {
-
-        qDebug() << id_man;
-        qDebug() << currentModel;
-
         QSqlQuery query;
         query.prepare("DELETE FROM manualtomodel WHERE ID_Man=" + id_man + " AND ID_Model=" + currentModel);
         if(!query.exec()) {
@@ -308,5 +326,7 @@ void MainWindow::on_manDel_clicked()
             msg.exec();
         }
         manModel->select();
+
+        QFile::remove(QDir::currentPath() + "/foto/" + id_man + ".jpg");
     }
 }
