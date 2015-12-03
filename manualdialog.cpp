@@ -81,9 +81,9 @@ void ManualDialog::editManual(QString id_manual, QString id_model)
 
     ui->pathToFile->setText(model->index(0,4).data().toString());
     QGraphicsScene *scene = new QGraphicsScene(ui->graphicsView);
-    scene->addPixmap(QPixmap(ui->pathToFile->text()));
+    scene->addPixmap(QPixmap(ui->pathToFile->text()).scaled(180, 250, Qt::KeepAspectRatio));
     ui->graphicsView->setScene(scene);
-    ui->graphicsView->fitInView(0,0,50,50, Qt::KeepAspectRatio);
+//    ui->graphicsView->fitInView(scene->itemsBoundingRect(), Qt::KeepAspectRatio);
 
     QSqlQuery query("SELECT Name FROM models WHERE ID=" + currentModel);
     query.next();
@@ -109,8 +109,8 @@ void ManualDialog::on_selectFile_clicked()
         editFoto = true;
         ui->pathToFile->setText(fileName);
         QGraphicsScene *scene = new QGraphicsScene(ui->graphicsView);
-        scene->addPixmap(QPixmap(fileName));
+        scene->addPixmap(QPixmap(fileName).scaled(180, 250, Qt::KeepAspectRatio));
         ui->graphicsView->setScene(scene);
-        ui->graphicsView->fitInView(scene->itemsBoundingRect(), Qt::KeepAspectRatio);
+        //ui->graphicsView->fitInView(scene->itemsBoundingRect(), Qt::KeepAspectRatio);
     }
 }
