@@ -1,0 +1,79 @@
+<style>
+.menu_models {
+	text-align: center; 
+	vertical-align: middle;
+}
+.menu_element {
+	display: inline-block;
+}
+.left_menu {
+	background-image: url("/upload/images/templatemo_button_left.png"); 
+	background-repeat: repeat-y; 
+	width:9px; 
+	height:30px; 
+	float:left; 
+	display: inline;
+}
+.right_menu {
+	background-image: url("/upload/images/templatemo_button_right.png"); 
+	background-repeat: repeat-y; 
+	width:9px; 
+	height:30px; 
+	float:left; 
+	display: inline;
+}
+.center_menu {
+	background-image: url("/upload/images/templatemo_button_center.png"); 
+	color: yellow;
+	background-repeat: repeat-x; 
+	align-content: center; 
+	padding: 5px 3px; 
+	text-decoration: none; 
+	float:left; 
+	display: inline;
+}
+.model_name {
+	color: yellow; 
+	text-decoration: none;
+}
+
+.model_name_activ {
+	color: red; 
+	text-decoration: none;
+}
+
+</style>
+
+<table style="width: 100%;" border="0" cellpadding="1" cellspacing="1">
+	<tbody>
+		<tr>
+			<td class="menu_models">
+!-ELEMENT-!
+				<div class="menu_element">
+					<div class="left_menu">
+						&nbsp;</div>
+					<div class="center_menu">
+						<a href="http://www.autoinfo24.ru/rukovodstva-po-remontu/%URL_TO_MODEL%">
+!-ACTIV-!
+							<span clss="model_name">
+							<font style="font-size: 11pt;" face="Arial, Helvetica, sans-serif">
+								<b>%MODEL_NAME%</b> 
+							</font>
+							</span>
+!-ACTIV-!
+							<span clss="model_name_activ">
+							<font style="font-size: 11pt;" face="Arial, Helvetica, sans-serif">
+								<b>%MODEL_NAME%</b> 
+							</font>
+							</span>
+!-ACTIV-!
+						</a>
+					</div>
+					<div style="right_menu">
+						&nbsp;</div>
+				</div>
+!-ELEMENT-!
+			</td>
+		</tr>
+	</tbody>
+</table>

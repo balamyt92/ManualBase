@@ -1,0 +1,121 @@
+<style>
+.manual {
+	width: 790px; 
+	margin: 4px;
+}
+.row_header {
+	background-repeat: no-repeat; 
+	padding: 4px;
+}
+.header_manual {
+	background-repeat: no-repeat; 
+	color: yellow; 
+	background-image: url("/upload/images/ag001.png");
+}
+.body_man {
+	background-image: url("/upload/images/ag002.png");
+}
+
+.body_man table {
+	width: 96%;
+}
+.prew_foto {
+	border: 2px solid; 
+	width: 120px; 
+	height: 160px;
+}
+.man_buttons {
+	background-repeat: no-repeat; 
+	padding: 1px; 
+	background-image: url("/upload/images/ag003.png");
+}
+.down_button {
+	width: 120px; 
+	float: right; 
+	height: 40px; 
+	margin-top: -20px; 
+}
+.pay_button {
+	width: 120px; 
+	float: right; 
+	height: 40px; 
+	margin-top: -20px; 
+	margin-right: 0px;
+}
+.button_span{
+	background-image: url("/upload/images/templatemo_button_004%281%29.png"); 
+	color: yellow; 
+	width: 100px; 
+	background-repeat: no-repeat; 
+	align-content: center; 
+	padding: 7px 20px 7px 17px; 
+	text-decoration: none;
+}
+</style>
+
+<table calss="manual" border="0" cellpadding="1" cellspacing="1">
+	<tbody>
+		<tr calss="row_header">
+			<td calss="header_manual" align="center">
+				<div>
+					<h3> %ЗАГОЛОВОК% </h3>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="body_man">
+				<center>
+					<table>
+						<tbody>
+							<tr>
+								<td style="text-align: center; vertical-align: middle; width: 130px;">
+									<div>
+										<a href="http://www.autoinfo24.ru/upload/images/%FOTO%">
+										<span class="highslide">
+											<img class="prew_foto" alt="" src="/upload/images/%PREW_FOTO%" title="Увеличить"> 
+										</span>
+										</a>
+									</div>
+								</td>
+								<td>
+									<div>
+									%DESCRIPTION%
+									</div>
+									<div>
+										&nbsp;</div>
+									<p>
+										<b>Автор:</b> %AUTOR%<br>
+										<b>Издательство:</b> %HOME%<br>
+										<b>Год издания:</b> %YEAR%<br>
+										<b>Страниц:</b> %COUNTLIST%<br>
+										<b>Формат:</b> %FORMAT%<br>
+										<b>Размер:</b> %SIZE%</font></p>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</center>
+			</td>
+		</tr>
+		<tr style="margin: -50px;">
+			<td class="man_buttons">
+				<div style="float: right; width: 300px; margin-right: 20px;">
+					<div class="down_button">
+						<a href="%DOWN_URL%" target="_blank">
+							<span class="button_span">
+							<b>СКАЧАТЬ</b>
+							</span>
+						</a>
+					</div>
+					<div class="pay_button">
+						<a href="%PAY_URL%" target="_blank">
+							<span class="button_span">
+							<b>&nbsp;КУПИТЬ&nbsp; </b>
+							</span>
+						</a>
+					</div>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>
