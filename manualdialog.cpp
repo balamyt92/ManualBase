@@ -85,9 +85,15 @@ void ManualDialog::editManual(QString id_manual, QString id_model)
     ui->graphicsView->setScene(scene);
 //    ui->graphicsView->fitInView(scene->itemsBoundingRect(), Qt::KeepAspectRatio);
 
-    QSqlQuery query("SELECT Name FROM models WHERE ID=" + currentModel);
-    query.next();
-    ui->models->setText(query.value(0).toString());
+    QString models;
+    QSqlQuery query("SELECT models.Name FROM manualtomodel "
+                    "LEFT JOIN models ON models.ID = manualtomodel.ID_Model "
+                    "WHERE ID_Man=" + id_manual);
+    while(query.next()) {
+        models += query.value(0).toString() + " ";
+    }
+
+    ui->models->setText(models);
 }
 
 void ManualDialog::updateManual()
@@ -113,4 +119,12 @@ void ManualDialog::on_selectFile_clicked()
         ui->graphicsView->setScene(scene);
         //ui->graphicsView->fitInView(scene->itemsBoundingRect(), Qt::KeepAspectRatio);
     }
+}
+
+void ManualDialog::on_slectModel_clicked()
+{
+    ModelEditDialog *dialog = new ModelEditDialog(this);
+    dialog->setManualId(model->data(model->index(0,0)).toString());
+    dialog->exec();
+    delete dialog;
 }

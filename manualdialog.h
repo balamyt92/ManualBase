@@ -14,6 +14,8 @@
 #include <QImage>
 #include <QGraphicsScene>
 
+#include "modeleditdialog.h"
+
 namespace Ui {
 class ManualDialog;
 }
@@ -40,6 +42,8 @@ public:
 
 private slots:
     void on_selectFile_clicked();
+
+    void on_slectModel_clicked();
 
 private:
     Ui::ManualDialog  *ui;
