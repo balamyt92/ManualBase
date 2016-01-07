@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlTableModel>
 #include <QtSql/QSqlRelationalTableModel>
 #include <QtSql/QSqlError>
@@ -51,7 +50,6 @@ private slots:
 
 private:
     Ui::MainWindow              *ui;
-    QSqlDatabase                *db;
     QSqlTableModel              *sectionModel;
     QSqlTableModel              *markModel;
     QSqlTableModel              *modelModel;

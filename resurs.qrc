@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>full_sheme.txt</file>
+    </qresource>
+</RCC>

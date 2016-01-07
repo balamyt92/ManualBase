@@ -15,12 +15,17 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     manualdialog.cpp \
-    modeleditdialog.cpp
+    modeleditdialog.cpp \
+    database.cpp
 
 HEADERS  += mainwindow.h \
     manualdialog.h \
-    modeleditdialog.h
+    modeleditdialog.h \
+    database.h
 
 FORMS    += mainwindow.ui \
     manualdialog.ui \
     modeleditdialog.ui
+
+RESOURCES += \
+    resurs.qrc

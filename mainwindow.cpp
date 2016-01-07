@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "database.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -7,68 +8,53 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // подключение к базе
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("base.db3");
-    if(!db.open()) {
-        QString err = tr("Не могу подключиться к базе! <br>") + db.lastError().text();
-        QMessageBox::critical(this, tr("Ошибка!"), err);
+    DataBase *db = new DataBase(this);
+    if(!db->connectToBase()) {
+        QMessageBox::critical(this, tr("Ошибка!"), db->lastErr());
+        this->setEnabled(false);
     }
-    // включаем внешние ключи в базе
-    QSqlQuery query("PRAGMA foreign_keys = ON");
+    else {
+        // Разделы
+        sectionModel = new QSqlTableModel(this);
+        sectionModel->setTable("sections");
+        if(!sectionModel->select()) {
+            QString err = tr("Не могу считать разделы! <br>") + sectionModel->lastError().text();
+            QMessageBox::critical(this, tr("Ошибка!"), err);
+        }
+        //sectionModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+        //ui->SectionsListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        ui->SectionsListView->setModel(sectionModel);
+        ui->SectionsListView->setModelColumn(1);
 
-    // Проверяем если папка для фоток
-    QDir foto("foto");
-    if(!foto.exists()) {
-        QMessageBox::information(this, tr("Нет папки фото!")
-                                 , tr("Она будет создана! "
-                                      "Но это значит что база пуста "
-                                      "или отсутсвую фото тодя мануалов!"));
-        foto.cdUp();
-        foto.mkdir("foto");
-        foto.cd("foto");
+        // Марки
+        markModel = new QSqlTableModel(this);
+        markModel->setTable("marks");
+        //markModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+        //ui->MarksListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        ui->MarksListView->setModel(markModel);
+        ui->MarksListView->setModelColumn(1);
+        ui->groupBox_2->setEnabled(false);
+
+        // Модели
+        modelModel = new QSqlTableModel(this);
+        modelModel->setTable("models");
+        //modelModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+        //ui->ModelsListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        ui->ModelsListView->setModel(modelModel);
+        ui->ModelsListView->setModelColumn(1);
+        ui->groupBox_3->setEnabled(false);
+
+        // Мануалы
+        manModel = new QSqlRelationalTableModel(this);
+        manModel->setJoinMode(QSqlRelationalTableModel::LeftJoin);
+        manModel->setTable("manualtomodel");
+        manModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+        manModel->setRelation(0, QSqlRelation("manual", "ID", "Name, ID"));
+        ui->ManualsListView->setModel(manModel);
+        ui->ManualsListView->setModelColumn(0);
+        ui->ManualsListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        ui->groupBox_4->setEnabled(false);
     }
-
-    // Разделы
-    sectionModel = new QSqlTableModel(this);
-    sectionModel->setTable("sections");
-    if(!sectionModel->select()) {
-        QString err = tr("Не могу считать разделы! <br>") + sectionModel->lastError().text();
-        QMessageBox::critical(this, tr("Ошибка!"), err);
-    }
-    //sectionModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    //ui->SectionsListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->SectionsListView->setModel(sectionModel);
-    ui->SectionsListView->setModelColumn(1);
-
-    // Марки
-    markModel = new QSqlTableModel(this);
-    markModel->setTable("marks");
-    //markModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    //ui->MarksListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->MarksListView->setModel(markModel);
-    ui->MarksListView->setModelColumn(1);
-    ui->groupBox_2->setEnabled(false);
-
-    // Модели
-    modelModel = new QSqlTableModel(this);
-    modelModel->setTable("models");
-    //modelModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    //ui->ModelsListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->ModelsListView->setModel(modelModel);
-    ui->ModelsListView->setModelColumn(1);
-    ui->groupBox_3->setEnabled(false);
-
-    // Мануалы
-    manModel = new QSqlRelationalTableModel(this);
-    manModel->setJoinMode(QSqlRelationalTableModel::LeftJoin);
-    manModel->setTable("manualtomodel");
-    manModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    manModel->setRelation(0, QSqlRelation("manual", "ID", "Name, ID"));
-    ui->ManualsListView->setModel(manModel);
-    ui->ManualsListView->setModelColumn(0);
-    ui->ManualsListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->groupBox_4->setEnabled(false);
 }
 
 MainWindow::~MainWindow()

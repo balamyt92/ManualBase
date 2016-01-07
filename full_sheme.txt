@@ -1,0 +1,80 @@
+PRAGMA foreign_keys = off;
+BEGIN TRANSACTION;
+
+-- Таблица: models
+CREATE TABLE models (
+    ID      INTEGER PRIMARY KEY AUTOINCREMENT
+                    NOT NULL,
+    Name    TEXT    NOT NULL
+                    DEFAULT new,
+    ID_Mark INTEGER REFERENCES marks (ID) ON DELETE RESTRICT
+                                          ON UPDATE CASCADE
+);
+
+
+-- Таблица: manual
+CREATE TABLE manual (
+    ID           INTEGER NOT NULL
+                         PRIMARY KEY,
+    Name         TEXT    NOT NULL
+                         DEFAULT new_manual,
+    [Desc]       TEXT,
+    Autor        TEXT,
+    IMG          TEXT,
+    Download_url TEXT,
+    Pay_url      TEXT,
+    Year         TEXT,
+    Generetion   INTEGER,
+    Public_hous  TEXT,
+    Count_list   TEXT,
+    Size         TEXT,
+    Type         TEXT,
+    IMG_prew     TEXT
+);
+
+
+-- Таблица: manualtomodel
+CREATE TABLE manualtomodel (
+    ID_Man   INTEGER,
+    ID_Model INTEGER,
+    ID_Mark  INTEGER,
+    CONSTRAINT man_to_man FOREIGN KEY (
+        ID_Man
+    )
+    REFERENCES manual (ID) ON DELETE RESTRICT
+                           ON UPDATE CASCADE,
+    CONSTRAINT model_to_model FOREIGN KEY (
+        ID_Model
+    )
+    REFERENCES models (ID) ON DELETE RESTRICT
+                           ON UPDATE CASCADE,
+    CONSTRAINT mark_to_mark FOREIGN KEY (
+        ID_Mark
+    )
+    REFERENCES marks (ID) ON DELETE RESTRICT
+                          ON UPDATE CASCADE
+);
+
+
+-- Таблица: marks
+CREATE TABLE marks (
+    ID          INTEGER PRIMARY KEY AUTOINCREMENT
+                        NOT NULL,
+    Name        TEXT    NOT NULL
+                        DEFAULT new,
+    ID_Sections INTEGER REFERENCES sections (ID) ON DELETE RESTRICT
+                                                 ON UPDATE CASCADE
+);
+
+
+-- Таблица: sections
+CREATE TABLE sections (
+    ID   INTEGER PRIMARY KEY AUTOINCREMENT
+                 NOT NULL,
+    Name TEXT    NOT NULL
+                 DEFAULT new
+);
+
+
+COMMIT TRANSACTION;
+PRAGMA foreign_keys = on;
