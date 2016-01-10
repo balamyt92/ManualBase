@@ -17,6 +17,9 @@ ManualDialog::ManualDialog(QWidget *parent) :
     }
 
     editFoto = false;
+    openToAdd = false;
+    idList.clear();
+    modelList.clear();
 }
 
 ManualDialog::~ManualDialog()
@@ -48,6 +51,10 @@ void ManualDialog::addManual(QString id_model)
     QSqlQuery query("SELECT Name FROM models WHERE ID=" + currentModel);
     query.next();
     ui->models->setText(query.value(0).toString());
+
+    idList << currentModel;
+    modelList << query.value(0).toString();
+    openToAdd = true;
 }
 
 void ManualDialog::saveManual()
@@ -55,7 +62,12 @@ void ManualDialog::saveManual()
     model->submitAll();
     QString id_manual = model->index(model->rowCount() - 1, 0).data().toString();
     QSqlQuery query;
-    query.prepare("INSERT INTO manualtomodel (ID_Man, ID_Model) VALUES("+ id_manual +","+ currentModel +")");
+    query.prepare("SELECT ID_Mark FROM models WHERE ID=" + currentModel);
+    query.exec();
+    query.next();
+    QString mark = query.value(0).toString();
+    query.prepare("INSERT INTO manualtomodel (ID_Man, ID_Model, ID_Mark) VALUES("+
+                  id_manual +","+ currentModel +","+ mark +")");
     query.exec();
 }
 
@@ -123,8 +135,17 @@ void ManualDialog::on_selectFile_clicked()
 
 void ManualDialog::on_slectModel_clicked()
 {
+    if (openToAdd)
+        return;
+
     ModelEditDialog *dialog = new ModelEditDialog(this);
-    dialog->setManualId(model->data(model->index(0,0)).toString());
+    if(openToAdd) {
+        dialog->addMode(&idList, &modelList);
+    }
+    else {
+        dialog->setManualId(model->data(model->index(0,0)).toString());
+    }
+
     dialog->exec();
     delete dialog;
 }

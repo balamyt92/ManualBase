@@ -6,13 +6,9 @@ ModelEditDialog::ModelEditDialog(QWidget *parent) :
     ui(new Ui::ModelEditDialog)
 {
     ui->setupUi(this);
-    model = new QSqlRelationalTableModel(this);
-    model->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    model->setTable("manualtomodel");
-    model->setRelation(1, QSqlRelation("models", "ID", "Name"));
-    ui->listView->setModel(model);
-    ui->listView->setModelColumn(1);
+
     ui->listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    addModeFlag = false;
 }
 
 ModelEditDialog::~ModelEditDialog()
@@ -22,6 +18,13 @@ ModelEditDialog::~ModelEditDialog()
 
 void ModelEditDialog::setManualId(QString id)
 {
+    model = new QSqlRelationalTableModel(this);
+    model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    model->setTable("manualtomodel");
+    model->setRelation(1, QSqlRelation("models", "ID", "Name"));
+    ui->listView->setModel(model);
+    ui->listView->setModelColumn(1);
+
     man = id;
     QSqlQuery query;
     query.prepare("SELECT ID_Model FROM manualtomodel WHERE ID_Man=" + id);
@@ -36,6 +39,16 @@ void ModelEditDialog::setManualId(QString id)
     model->setFilter("ID_Man=" + id);
     if (!model->select())
         qDebug() << model->lastError().text();
+}
+
+void ModelEditDialog::addMode(QStringList *id_list, QStringList *name_list)
+{
+    idList = id_list;
+    nameList = name_list;
+    listModel = new QStringListModel(this);
+    listModel->setStringList(*nameList);
+
+    addModeFlag = true;
 }
 
 void ModelEditDialog::on_pushButton_3_clicked()

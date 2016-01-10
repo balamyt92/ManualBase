@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QString>
 #include <QSqlRelationalTableModel>
+#include <QStringListModel>
 #include <QSqlError>
 #include <QDebug>
 #include <QInputDialog>
@@ -24,6 +25,7 @@ public:
     explicit ModelEditDialog(QWidget *parent = 0);
     ~ModelEditDialog();
     void setManualId(QString id);
+    void addMode(QStringList *id_list, QStringList *name_list);
 
 private slots:
     void on_pushButton_3_clicked();
@@ -37,6 +39,10 @@ private:
     QSqlRelationalTableModel    *model;
     QString                     mark;
     QString                     man;
+    QStringListModel            *listModel;
+    QStringList                 *idList;
+    QStringList                 *nameList;
+    bool                        addModeFlag;
 };
 
 #endif // MODELEDITDIALOG_H

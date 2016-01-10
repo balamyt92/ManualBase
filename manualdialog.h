@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QValidator>
 #include <QString>
+#include <QStringList>
 #include <QDataWidgetMapper>
 #include <QSqlTableModel>
 #include <QSqlError>
@@ -53,6 +54,9 @@ private:
     QString            currentModel;
     QString            fileName;
     bool               editFoto;
+    bool               openToAdd;
+    QStringList        modelList;
+    QStringList        idList;
 };
 
 #endif // MANUALDIALOG_H
