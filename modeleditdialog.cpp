@@ -63,7 +63,8 @@ void ModelEditDialog::on_pushButton_clicked()
     QStringList id;
     QStringList name;
 
-    query.prepare("SELECT ID, Name FROM models WHERE ID_Mark=" + mark);
+    //query.prepare("SELECT ID, Name FROM models WHERE ID_Mark=" + mark);
+    query.prepare("SELECT ID, Name FROM models ORDER BY Name");
     query.exec();
     while (query.next()) {
         id << query.value(0).toString();
