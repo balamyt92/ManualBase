@@ -48,6 +48,8 @@ private slots:
 
     void on_manDel_clicked();
 
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow              *ui;
     QSqlTableModel              *sectionModel;
@@ -57,6 +59,9 @@ private:
     QString                     currenSection;
     QString                     currentMark;
     QString                     currentModel;
+    QString                     rootURL;
+
+    QString makeMenu(QString id_mark);
 
 };
 

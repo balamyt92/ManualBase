@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>full_sheme.txt</file>
+        <file>style.css</file>
+        <file>menu_element.html</file>
+        <file>manual_template.html</file>
+        <file>menu_template.html</file>
     </qresource>
 </RCC>

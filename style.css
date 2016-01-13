@@ -1,0 +1,96 @@
+<style>
+.manual {
+        width: 790px;
+        margin: 4px;
+}
+.row_header {
+        background-repeat: no-repeat;
+        padding: 4px;
+}
+.header_manual {
+        background-repeat: no-repeat;
+        color: yellow;
+        background-image: url("/upload/images/ag001.png");
+}
+.body_man {
+        background-image: url("/upload/images/ag002.png");
+}
+
+.body_man table {
+        width: 96%;
+}
+.prew_foto {
+        border: 2px solid;
+        width: 120px;
+        height: 160px;
+}
+.man_buttons {
+        background-repeat: no-repeat;
+        padding: 1px;
+        background-image: url("/upload/images/ag003.png");
+}
+.down_button {
+        width: 120px;
+        float: right;
+        height: 40px;
+        margin-top: -20px;
+}
+.pay_button {
+        width: 120px;
+        float: right;
+        height: 40px;
+        margin-top: -20px;
+        margin-right: 0px;
+}
+.button_span{
+        background-image: url("/upload/images/templatemo_button_004%281%29.png");
+        color: yellow;
+        width: 100px;
+        background-repeat: no-repeat;
+        align-content: center;
+        padding: 7px 20px 7px 17px;
+        text-decoration: none;
+}
+
+.menu_models {
+        text-align: center;
+        vertical-align: middle;
+}
+.menu_element {
+        display: inline-block;
+}
+.menu_element div.left_menu {
+        background-image: url("/upload/images/templatemo_button_left.png");
+        background-repeat: repeat-y;
+        width:9px;
+        height:30px;
+        float:left;
+        display: inline;
+}
+.menu_element div.right_menu {
+        background-image: url("/upload/images/templatemo_button_right.png");
+        background-repeat: repeat-y;
+        width:9px;
+        height:30px;
+        float:left;
+        display: inline;
+}
+.menu_element div.center_menu {
+        background-image: url("/upload/images/templatemo_button_center.png");
+        color: yellow;
+        background-repeat: repeat-x;
+        align-content: center;
+        padding: 5px 3px;
+        text-decoration: none;
+        float:left;
+        display: inline;
+}
+a:active span.model_name {
+        color: red;
+        text-decoration: none;
+}
+a span.model_name {
+        color: yellow;
+        text-decoration: none;
+}
+</style>

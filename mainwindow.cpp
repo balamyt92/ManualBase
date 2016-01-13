@@ -8,6 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    rootURL = "http://www.autoinfo24.ru/rukovodstva-po-remontu/";
+
     DataBase *db = new DataBase(this);
     if(!db->connectToBase()) {
         QMessageBox::critical(this, tr("Ошибка!"), db->lastErr());
@@ -315,4 +317,113 @@ void MainWindow::on_manDel_clicked()
 
         QFile::remove(QDir::currentPath() + "/foto/" + id_man + ".jpg");
     }
+}
+
+#include <QTextEdit>
+void MainWindow::on_pushButton_clicked()
+{
+    QModelIndex index = ui->MarksListView->currentIndex();
+    if(!index.isValid())
+        return;
+    QString id_mark = markModel->index(index.row(), 0).data().toString();
+
+    QFile::remove(QDir::currentPath() + "/out/");
+    QDir out(QDir::currentPath());
+    out.mkdir("out");
+    out.cd("out");
+
+    // make menu models
+    QTextEdit *browser = new QTextEdit(this);
+    browser->setGeometry(300, 300, 400, 500);
+    browser->setPlainText(makeMenu(id_mark));
+    browser->show();
+
+    // make pages
+    // make foto folder
+
+}
+
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QTableView>
+#include <QDialogButtonBox>
+QString MainWindow::makeMenu(QString id_mark)
+{
+    QStringList modelList;
+    QString menu;
+    QSqlQuery query;
+    query.prepare("SELECT Name FROM models WHERE ID_Mark=" + id_mark);
+    query.exec();
+    while (query.next()) {
+        modelList << query.value(0).toString();
+    }
+
+    query.prepare("SELECT Name, ID_Sections FROM marks WHERE ID=" + id_mark);
+    query.exec();
+    query.next();
+    QString markName = query.value(0).toString();
+    QString sectionName = query.value(1).toString();
+
+    query.prepare("SELECT Name FROM sections WHERE ID=" + sectionName);
+    query.exec();
+    query.next();
+    sectionName = query.value(0).toString();
+
+    QDialog *dialog = new QDialog(this);
+    QTableView *view = new QTableView(dialog);
+    QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Ok
+                                                 | QDialogButtonBox::Cancel, dialog);
+    connect(box, SIGNAL(accepted()), dialog, SLOT(accept()));
+    connect(box, SIGNAL(rejected()), dialog, SLOT(reject()));
+
+    QVBoxLayout *layout = new QVBoxLayout(dialog);
+    layout->addWidget(view);
+    layout->addWidget(box);
+    dialog->setLayout(layout);
+
+    query.prepare("DROP TABLE tmp");
+    query.exec();
+
+    query.prepare("CREATE TABLE tmp(Name TEXT, URL TEXT)");
+    query.exec();
+
+
+    QSqlTableModel *model = new QSqlTableModel(dialog);
+    model->setTable("tmp");
+    model->select();
+    for (int i = 0; i < modelList.count(); ++i) {
+        model->insertRow(model->rowCount());
+        QString name = modelList.at(i);
+        model->setData(model->index(i, 0), name);
+        model->setData(model->index(i, 1), rootURL + sectionName.toLower().replace(" ", "-") + "/"
+                                                   + markName.toLower().replace(" ", "-") + "/"
+                                                   + name.toLower().replace(" ", "-") + "/");
+        model->submitAll();
+    }
+    view->setModel(model);
+
+
+    QString elements;
+    if(dialog->exec() == QDialog::Accepted) {
+        // make menu
+        QFile file(":menu_element.html");
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        QTextStream in(&file);
+        QString element = in.readAll();
+
+        for (int i = 0; i < model->rowCount(); ++i) {
+            QString tmp = element;
+            tmp.replace("%MODEL_NAME%", model->index(i, 0).data().toString());
+            tmp.replace("%URL_TO_MODEL%", model->index(i, 1).data().toString());
+            elements.append(tmp);
+        }
+        file.close();
+
+        QFile file2(":menu_template.html");
+        file2.open(QIODevice::ReadOnly | QIODevice::Text);
+        QTextStream in2(&file2);
+        menu = in2.readAll();
+        menu.replace("%MENU%", elements);
+    }
+    return menu;
 }
