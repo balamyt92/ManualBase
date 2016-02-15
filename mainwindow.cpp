@@ -319,7 +319,6 @@ void MainWindow::on_manDel_clicked()
     }
 }
 
-#include <QTextEdit>
 void MainWindow::on_pushButton_clicked()
 {
     QModelIndex index = ui->MarksListView->currentIndex();
@@ -333,12 +332,36 @@ void MainWindow::on_pushButton_clicked()
     out.cd("out");
 
     // make menu models
-    QTextEdit *browser = new QTextEdit(this);
-    browser->setGeometry(300, 300, 400, 500);
-    browser->setPlainText(makeMenu(id_mark));
-    browser->show();
+    QString menu = makeMenu(id_mark);
 
     // make pages
+    QString general_page = menu;
+
+    QStringList modelList;
+    QSqlQuery query;
+    query.prepare("SELECT Name FROM models WHERE ID_Mark=" + id_mark);
+    query.exec();
+    while (query.next()) {
+        modelList << query.value(0).toString();
+    }
+    query.prepare("SELECT Name, ID_Sections FROM marks WHERE ID=" + id_mark);
+    query.exec();
+    query.next();
+    QString markName = query.value(0).toString();
+    QString sectionName = query.value(1).toString(); // id section, not Name
+
+    query.prepare("SELECT Name FROM sections WHERE ID=" + sectionName);
+    query.exec();
+    query.next();
+    sectionName = query.value(0).toString(); // now true Name section
+
+    for (int i = 0; i < modelList.count(); ++i) {
+        QString page = makePage(modelList.at(i), menu, markName, sectionName);
+        saveToFile(page, modelList.at(i)+".html");
+        general_page += page;
+    }
+    saveToFile(general_page, "general_page.html");
+
     // make foto folder
 
 }
@@ -426,4 +449,17 @@ QString MainWindow::makeMenu(QString id_mark)
         menu.replace("%MENU%", elements);
     }
     return menu;
+}
+
+QString MainWindow::makePage(QString modelName, QString menu, QString markName, QString sectionName)
+{
+    QString tmp = "<span style=\"color:red>\"" + modelName + "</span>";
+    QString newMenu = menu.replace(modelName, tmp);
+
+    QSqlQuery query;
+    query.prepare("SELECT * FROM manuals WHERE ID_Mark=" + mark_id);
+    query.exec();
+    while (query.next()) {
+        modelList << query.value(0).toString();
+    }
 }

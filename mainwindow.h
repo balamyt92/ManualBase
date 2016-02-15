@@ -62,6 +62,7 @@ private:
     QString                     rootURL;
 
     QString makeMenu(QString id_mark);
+    QString makePage(QString modelName, QString menu, QString markName, QString sectionName);
 
 };
 
