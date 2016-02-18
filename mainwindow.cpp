@@ -338,17 +338,19 @@ void MainWindow::on_pushButton_clicked()
     QString general_page = menu;
 
     QStringList modelList;
+    QStringList modelListID;
     QSqlQuery query;
-    query.prepare("SELECT Name FROM models WHERE ID_Mark=" + id_mark);
+    query.prepare("SELECT ID, Name FROM models WHERE ID_Mark=" + id_mark);
     query.exec();
     while (query.next()) {
-        modelList << query.value(0).toString();
+        modelListID << query.value(0).toString();
+        modelList << query.value(1).toString();
     }
     query.prepare("SELECT Name, ID_Sections FROM marks WHERE ID=" + id_mark);
     query.exec();
     query.next();
     QString markName = query.value(0).toString();
-    QString sectionName = query.value(1).toString(); // id section, not Name
+    QString sectionName = query.value(1).toString(); // this id section, not Name
 
     query.prepare("SELECT Name FROM sections WHERE ID=" + sectionName);
     query.exec();
@@ -356,7 +358,7 @@ void MainWindow::on_pushButton_clicked()
     sectionName = query.value(0).toString(); // now true Name section
 
     for (int i = 0; i < modelList.count(); ++i) {
-        QString page = makePage(modelList.at(i), menu, markName, sectionName);
+        QString page = makePage(modelList.at(i), modelListID.at(i), menu, markName, sectionName);
         saveToFile(page, modelList.at(i)+".html");
         general_page += page;
     }
@@ -451,15 +453,56 @@ QString MainWindow::makeMenu(QString id_mark)
     return menu;
 }
 
-QString MainWindow::makePage(QString modelName, QString menu, QString markName, QString sectionName)
+QString MainWindow::makePage(QString modelName, QString modelID, QString menu, QString markName, QString sectionName)
 {
     QString tmp = "<span style=\"color:red>\"" + modelName + "</span>";
-    QString newMenu = menu.replace(modelName, tmp);
+    menu.replace(modelName, tmp);
 
+    QFile file(":/manual_template.html");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    QString manual_tmpl = file.readAll();
+
+    QString page = menu;
     QSqlQuery query;
-    query.prepare("SELECT * FROM manuals WHERE ID_Mark=" + mark_id);
+    query.prepare("SELECT * FROM manualtomodel WHERE ID_Model=" + modelID);
     query.exec();
+    QString man = manual_tmpl;
     while (query.next()) {
-        modelList << query.value(0).toString();
+        QSqlQuery man_query("SELECT * FROM maunals WHERE ID=" + query.value(0).toString());
+        while (man_query.next()) {
+            man.replace("%ЗАГОЛОВОК%",    query.value(1).toString())
+               .replace("%FOTO%",         query.value(3).toString())
+               .replace("%PREW_FOTO%",    query.value(13).toString())
+               .replace("%DESCRIPTION%",  query.value(1).toString())
+               .replace("%AUTOR%",        query.value(2).toString())
+               .replace("%HOME%",         query.value(9).toString())
+               .replace("%YEAR%",         query.value(7).toString())
+               .replace("%COUNTLIST%",    query.value(10).toString())
+               .replace("%FORMAT%",       query.value(12).toString())
+               .replace("%SIZE%",         query.value(11).toString());
+            if(!query.value(5).toString().isEmpty()) {
+                man.replace("%DOWN_URL%", query.value(5).toString());
+            } else {
+                man.replace("down_button\"", "down_button\" style=\"display:none;\"");
+            }
+            if(!query.value(6).toString().isEmpty()) {
+                man.replace("%PAY_URL%", query.value(6).toString());
+            } else {
+                man.replace("pay_button\"", "pay_button\" style=\"display:none;\"");
+            }
+            page += man;
+        }
+
     }
+
+    return page;
+}
+
+void MainWindow::saveToFile(QString content, QString fileName)
+{
+    QFile file(QDir::currentPath() + "/out/" + fileName);
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&file);
+    out << content;
+    file.close();
 }
