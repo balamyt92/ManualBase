@@ -470,27 +470,28 @@ QString MainWindow::makePage(QString modelName, QString modelID, QString menu, Q
     while (query.next()) {
         QSqlQuery man_query("SELECT * FROM maunals WHERE ID=" + query.value(0).toString());
         while (man_query.next()) {
-            man.replace("%ЗАГОЛОВОК%",    query.value(1).toString())
-               .replace("%FOTO%",         query.value(3).toString())
-               .replace("%PREW_FOTO%",    query.value(13).toString())
-               .replace("%DESCRIPTION%",  query.value(1).toString())
-               .replace("%AUTOR%",        query.value(2).toString())
-               .replace("%HOME%",         query.value(9).toString())
-               .replace("%YEAR%",         query.value(7).toString())
-               .replace("%COUNTLIST%",    query.value(10).toString())
-               .replace("%FORMAT%",       query.value(12).toString())
-               .replace("%SIZE%",         query.value(11).toString());
+            man.replace("%ЗАГОЛОВОК%",    man_query.value(1).toString())
+               .replace("%FOTO%",         man_query.value(3).toString())
+               .replace("%PREW_FOTO%",    man_query.value(13).toString())
+               .replace("%DESCRIPTION%",  man_query.value(1).toString())
+               .replace("%AUTOR%",        man_query.value(2).toString())
+               .replace("%HOME%",         man_query.value(9).toString())
+               .replace("%YEAR%",         man_query.value(7).toString())
+               .replace("%COUNTLIST%",    man_query.value(10).toString())
+               .replace("%FORMAT%",       man_query.value(12).toString())
+               .replace("%SIZE%",         man_query.value(11).toString());
             if(!query.value(5).toString().isEmpty()) {
-                man.replace("%DOWN_URL%", query.value(5).toString());
+                man.replace("%DOWN_URL%", man_query.value(5).toString());
             } else {
                 man.replace("down_button\"", "down_button\" style=\"display:none;\"");
             }
             if(!query.value(6).toString().isEmpty()) {
-                man.replace("%PAY_URL%", query.value(6).toString());
+                man.replace("%PAY_URL%", man_query.value(6).toString());
             } else {
                 man.replace("pay_button\"", "pay_button\" style=\"display:none;\"");
             }
             page += man;
+            qDebug() << man;
         }
 
     }
