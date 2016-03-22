@@ -113,9 +113,10 @@ void ManualDialog::updateManual()
     model->submitAll();
 }
 
-void ManualDialog::setPathToFile(QString path)
+void ManualDialog::setPathToFile(QString path, QString path_prew)
 {
     model->setData(model->index(model->rowCount() - 1, 4), path);
+    model->setData(model->index(model->rowCount() - 1, 5), path_prew);
     model->submitAll();
 }
 

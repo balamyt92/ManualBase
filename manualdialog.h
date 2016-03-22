@@ -39,7 +39,7 @@ public:
         return model->index(model->rowCount() - 1, 0).data().toString();
     }
 
-    void setPathToFile(QString path);
+    void setPathToFile(QString path, QString path_prew);
 
 private slots:
     void on_selectFile_clicked();

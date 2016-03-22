@@ -16,12 +16,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     manualdialog.cpp \
     modeleditdialog.cpp \
-    database.cpp
+    database.cpp \
+    htmlmaker.cpp
 
 HEADERS  += mainwindow.h \
     manualdialog.h \
     modeleditdialog.h \
-    database.h
+    database.h \
+    htmlmaker.h
 
 FORMS    += mainwindow.ui \
     manualdialog.ui \

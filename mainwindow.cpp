@@ -259,7 +259,8 @@ void MainWindow::on_ManualsListView_doubleClicked(const QModelIndex &index)
         if(md->isEditFoto()) {
             QFile::remove(QDir::currentPath() + "/foto/" + id_man + ".jpg");
             QFile::copy(md->getFoto(), QDir::currentPath() + "/foto/" + id_man + ".jpg");
-            md->setPathToFile("foto/" + id_man + ".jpg");
+            QFile::copy(md->getFoto(), QDir::currentPath() + "/foto/prew_" + id_man + ".jpg");
+            md->setPathToFile("foto/" + id_man + ".jpg", "/foto/prew_" + id_man + ".jpg");
         }
     }
     delete md;
@@ -274,8 +275,10 @@ void MainWindow::on_manAdd_clicked()
         md->saveManual();
         manModel->select();
         QFile::copy(md->getFoto(), QDir::currentPath() + "/foto/" + md->getIDLastAddManual() + ".jpg");
+        QFile::copy(md->getFoto(), QDir::currentPath() + "/foto/prew_" + md->getIDLastAddManual() + ".jpg");
 
-        md->setPathToFile("foto/" + md->getIDLastAddManual() + ".jpg");
+        md->setPathToFile("foto/" + md->getIDLastAddManual() + ".jpg",
+                          "foto/prew_" + md->getIDLastAddManual() + ".jpg");
     }
     delete md;
 }
@@ -319,50 +322,59 @@ void MainWindow::on_manDel_clicked()
     }
 }
 
+
+#include "htmlmaker.h"
 void MainWindow::on_pushButton_clicked()
 {
     QModelIndex index = ui->MarksListView->currentIndex();
     if(!index.isValid())
         return;
+
     QString id_mark = markModel->index(index.row(), 0).data().toString();
+    QString path = QDir::currentPath() + "/out";
+    QDir dir;
+    dir.mkdir(path);
+    dir.cd(path);
+    dir.remove("*");
 
-    QFile::remove(QDir::currentPath() + "/out/");
-    QDir out(QDir::currentPath());
-    out.mkdir("out");
-    out.cd("out");
+    HTMLMaker maker;
+    maker.setPath(path);
+    if(!maker.run(id_mark))
+        qDebug() << "FALLLSEEEEEEEE!!!!!";
 
-    // make menu models
-    QString menu = makeMenu(id_mark);
 
-    // make pages
-    QString general_page = menu;
+//    // make menu models
+//    QString menu = makeMenu(id_mark);
 
-    QStringList modelList;
-    QStringList modelListID;
-    QSqlQuery query;
-    query.prepare("SELECT ID, Name FROM models WHERE ID_Mark=" + id_mark);
-    query.exec();
-    while (query.next()) {
-        modelListID << query.value(0).toString();
-        modelList << query.value(1).toString();
-    }
-    query.prepare("SELECT Name, ID_Sections FROM marks WHERE ID=" + id_mark);
-    query.exec();
-    query.next();
-    QString markName = query.value(0).toString();
-    QString sectionName = query.value(1).toString(); // this id section, not Name
+//    // make pages
+//    QString general_page = menu;
 
-    query.prepare("SELECT Name FROM sections WHERE ID=" + sectionName);
-    query.exec();
-    query.next();
-    sectionName = query.value(0).toString(); // now true Name section
+//    QStringList modelList;
+//    QStringList modelListID;
+//    QSqlQuery query;
+//    query.prepare("SELECT ID, Name FROM models WHERE ID_Mark=" + id_mark);
+//    query.exec();
+//    while (query.next()) {
+//        modelListID << query.value(0).toString();
+//        modelList << query.value(1).toString();
+//    }
+//    query.prepare("SELECT Name, ID_Sections FROM marks WHERE ID=" + id_mark);
+//    query.exec();
+//    query.next();
+//    QString markName = query.value(0).toString();
+//    QString sectionName = query.value(1).toString(); // this id section, not Name
 
-    for (int i = 0; i < modelList.count(); ++i) {
-        QString page = makePage(modelList.at(i), modelListID.at(i), menu, markName, sectionName);
-        saveToFile(page, modelList.at(i)+".html");
-        general_page += page;
-    }
-    saveToFile(general_page, "general_page.html");
+//    query.prepare("SELECT Name FROM sections WHERE ID=" + sectionName);
+//    query.exec();
+//    query.next();
+//    sectionName = query.value(0).toString(); // now true Name section
+
+//    for (int i = 0; i < modelList.count(); ++i) {
+//        QString page = makePage(modelList.at(i), modelListID.at(i), menu, markName, sectionName);
+//        saveToFile(page, modelList.at(i)+".html");
+//        general_page += page;
+//    }
+//    saveToFile(general_page, "general_page.html");
 
     // make foto folder
 
