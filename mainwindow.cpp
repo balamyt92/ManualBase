@@ -274,8 +274,17 @@ void MainWindow::on_manAdd_clicked()
     {
         md->saveManual();
         manModel->select();
-        QFile::copy(md->getFoto(), QDir::currentPath() + "/foto/" + md->getIDLastAddManual() + ".jpg");
-        QFile::copy(md->getFoto(), QDir::currentPath() + "/foto/prew_" + md->getIDLastAddManual() + ".jpg");
+        QFile::copy(md->getFoto(), QDir::currentPath() + "/foto/" +
+                    md->getIDLastAddManual() + ".jpg");
+        QPixmap pixmap;
+        if(!pixmap.load(QDir::currentPath() + "/foto/" +
+                        md->getIDLastAddManual() + ".jpg"))
+            qDebug() << "Not load";
+        pixmap = pixmap.scaled(120, 170, Qt::IgnoreAspectRatio,
+                               Qt::SmoothTransformation);
+        if(!pixmap.save(QDir::currentPath() + "/foto/prew_" +
+                        md->getIDLastAddManual() + ".jpg", "jpeg",100))
+            qDebug() << pixmap;
 
         md->setPathToFile("foto/" + md->getIDLastAddManual() + ".jpg",
                           "foto/prew_" + md->getIDLastAddManual() + ".jpg");
