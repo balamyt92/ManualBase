@@ -94,7 +94,7 @@ QString HTMLMaker::makePage(QString id_model)
 
     while (query.next()) {
         QList<QString> data;
-        for (int i = 1; i < 13; ++i) {
+        for (int i = 1; i <= 13; ++i) {
             data << query.value(i).toString();
         }
         page += makeMan(data, this->man_template);
