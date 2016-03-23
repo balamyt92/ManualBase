@@ -33,8 +33,12 @@ bool HTMLMaker::run(QString _id_mark)
     this->man_template = in3.readAll();
     file3.close();
 
+    QFile file4(":style.css");
+    file4.open(QIODevice::ReadOnly | QIODevice::Text);
+    QTextStream in4(&file4);
+    QString menu = in4.readAll() + makeMenu();
+    file4.close();
 
-    QString menu = makeMenu();
     if(menu.isEmpty()) { qDebug() << "menu"; return false; }
     QString generel_page = menu;
 
