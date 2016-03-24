@@ -188,9 +188,6 @@ bool HTMLMaker::saveImage(QString id_man)
 {
     QString path = QDir::currentPath() + "/out/img";
     QString inPath =  QDir::currentPath() + "/foto";
-    qDebug() << inPath;
-    qDebug() << inPath + "/" + id_man + ".jpg";
-    qDebug() << path + "/" + id_man + ".jpg";
     if(QFile::copy(inPath + "/" + id_man + ".jpg", path + "/" + id_man + ".jpg")) {
         if(!QFile::copy(inPath + "/prew_" + id_man + ".jpg", path + "/prew_" + id_man + ".jpg"))
             goto errImg;

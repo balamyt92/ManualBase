@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
         // Разделы
         sectionModel = new QSqlTableModel(this);
         sectionModel->setTable("sections");
+        sectionModel->setSort(1, Qt::AscendingOrder);
         if(!sectionModel->select()) {
             QString err = tr("Не могу считать разделы! <br>") + sectionModel->lastError().text();
             QMessageBox::critical(this, tr("Ошибка!"), err);
@@ -31,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
         // Марки
         markModel = new QSqlTableModel(this);
         markModel->setTable("marks");
+        markModel->setSort(1, Qt::AscendingOrder);
         //markModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
         //ui->MarksListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
         ui->MarksListView->setModel(markModel);
@@ -40,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
         // Модели
         modelModel = new QSqlTableModel(this);
         modelModel->setTable("models");
+        modelModel->setSort(1, Qt::AscendingOrder);
         //modelModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
         //ui->ModelsListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
         ui->ModelsListView->setModel(modelModel);
@@ -51,7 +54,9 @@ MainWindow::MainWindow(QWidget *parent) :
         manModel->setJoinMode(QSqlRelationalTableModel::LeftJoin);
         manModel->setTable("manualtomodel");
         manModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-        manModel->setRelation(0, QSqlRelation("manual", "ID", "Name, ID"));
+        manModel->setRelation(0, QSqlRelation("manual", "ID", "Name, ID, Generetion"));
+        // TODO добавить сортировку мануалов по поколению
+        // пока не понятно как setSort Не работает
         ui->ManualsListView->setModel(manModel);
         ui->ManualsListView->setModelColumn(0);
         ui->ManualsListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
