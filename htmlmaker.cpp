@@ -67,7 +67,6 @@ bool HTMLMaker::run(QString _id_mark)
 
 QString HTMLMaker::makeMan(QList<QString> data, QString template_)
 {
-    qDebug() << data;
     if(!data.at(0).isEmpty()) {
         template_ = template_.replace("%DOWN_URL%", data.at(4)); }
 
@@ -90,7 +89,7 @@ QString HTMLMaker::makePage(QString id_model)
 {
     QString page;
     QSqlQuery query;
-    query.prepare("SELECT manual.* FROM manualtomodel "
+    query.prepare("SELECT manual.*  FROM manualtomodel "
                   "LEFT JOIN manual ON manualtomodel.ID_Man = manual.ID "
                   "WHERE ID_Model=" + id_model + " "
                   "ORDER BY manual.Generetion");
@@ -102,6 +101,9 @@ QString HTMLMaker::makePage(QString id_model)
             data << query.value(i).toString();
         }
         page += makeMan(data, this->man_template);
+        if(!saveImage(query.value(0).toString())) {
+            qDebug() << "Fail to copy image!";
+        }
     }
 
     return page;
@@ -179,4 +181,23 @@ QString HTMLMaker::makeMenu()
         return menu;
     }
     return "";
+}
+
+#include <QDir>
+bool HTMLMaker::saveImage(QString id_man)
+{
+    QString path = QDir::currentPath() + "/out/img";
+    QString inPath =  QDir::currentPath() + "/foto";
+    qDebug() << inPath;
+    qDebug() << inPath + "/" + id_man + ".jpg";
+    qDebug() << path + "/" + id_man + ".jpg";
+    if(QFile::copy(inPath + "/" + id_man + ".jpg", path + "/" + id_man + ".jpg")) {
+        if(!QFile::copy(inPath + "/prew_" + id_man + ".jpg", path + "/prew_" + id_man + ".jpg"))
+            goto errImg;
+    }
+    else {
+        errImg:
+            return false;
+    }
+    return true;
 }

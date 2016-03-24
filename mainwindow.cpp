@@ -343,6 +343,7 @@ void MainWindow::on_pushButton_clicked()
     QString path = QDir::currentPath() + "/out";
     QDir dir;
     dir.mkdir(path);
+    dir.mkdir(path + "/img");
     dir.cd(path);
     dir.remove("*");
 

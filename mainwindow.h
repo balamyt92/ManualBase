@@ -61,8 +61,6 @@ private:
     QString                     currentModel;
     QString                     rootURL;
 
-    QString makeMenu(QString id_mark);
-    QString makePage(QString modelName, QString modelID, QString menu, QString markName, QString sectionName);
     void saveToFile(QString content, QString fileName);
 
 };
