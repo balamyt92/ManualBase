@@ -187,7 +187,7 @@ QString HTMLMaker::makeMenu()
 bool HTMLMaker::saveImage(QString id_man)
 {
     QString path = QDir::currentPath() + "/out/img";
-    QString inPath =  QDir::currentPath() + "/foto";
+    QString inPath =  QDir::currentPath() + "/img";
     if(QFile::copy(inPath + "/" + id_man + ".jpg", path + "/" + id_man + ".jpg")) {
         if(!QFile::copy(inPath + "/prew_" + id_man + ".jpg", path + "/prew_" + id_man + ".jpg"))
             goto errImg;

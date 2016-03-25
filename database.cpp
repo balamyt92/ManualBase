@@ -24,12 +24,12 @@ bool DataBase::connectToBase()
     }
 
     // Проверяем если папка для фоток
-    QDir foto("foto");
+    QDir foto("img");
     if(!foto.exists()) {
         qDebug() << "Нет папки под фото!";
         foto.cdUp();
-        foto.mkdir("foto");
-        foto.cd("foto");
+        foto.mkdir("img");
+        foto.cd("img");
     }
 
     return true;
