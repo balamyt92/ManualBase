@@ -263,8 +263,19 @@ void MainWindow::on_ManualsListView_doubleClicked(const QModelIndex &index)
 
         if(md->isEditFoto()) {
             QFile::remove(QDir::currentPath() + "/img/" + id_man + ".jpg");
+            QFile::remove(QDir::currentPath() + "/img/prew_" + id_man + ".jpg");
             QFile::copy(md->getFoto(), QDir::currentPath() + "/img/" + id_man + ".jpg");
-            QFile::copy(md->getFoto(), QDir::currentPath() + "/img/prew_" + id_man + ".jpg");
+
+            QImage img(md->getFoto());
+            img = img.scaled(QSize(120, 170));
+
+            if(!img.save(QDir::currentPath() + "/img/prew_" +
+                     md->getIDLastAddManual() + ".jpg"))
+                qDebug() << "Fail!!!!!";
+
+            md->setPathToFile("img/" + md->getIDLastAddManual() + ".jpg",
+                              "img/prew_" + md->getIDLastAddManual() + ".jpg");
+
             md->setPathToFile("img/" + id_man + ".jpg", "/img/prew_" + id_man + ".jpg");
         }
     }
@@ -281,15 +292,13 @@ void MainWindow::on_manAdd_clicked()
         manModel->select();
         QFile::copy(md->getFoto(), QDir::currentPath() + "/img/" +
                     md->getIDLastAddManual() + ".jpg");
-        QPixmap pixmap;
-        if(!pixmap.load(QDir::currentPath() + "/img/" +
-                        md->getIDLastAddManual() + ".jpg"))
-            qDebug() << "Not load";
-        pixmap = pixmap.scaled(120, 170, Qt::IgnoreAspectRatio,
-                               Qt::SmoothTransformation);
-        if(!pixmap.save(QDir::currentPath() + "/img/prew_" +
-                        md->getIDLastAddManual() + ".jpg", "jpeg",100))
-            qDebug() << pixmap;
+
+        QImage img(md->getFoto());
+        img = img.scaled(QSize(120, 170));
+
+        if(!img.save(QDir::currentPath() + "/img/prew_" +
+                 md->getIDLastAddManual() + ".jpg"))
+            qDebug() << "Fail!!!!!";
 
         md->setPathToFile("img/" + md->getIDLastAddManual() + ".jpg",
                           "img/prew_" + md->getIDLastAddManual() + ".jpg");
@@ -318,6 +327,9 @@ void MainWindow::on_manDel_clicked()
         if(!query.exec()) {
             goto ERR;
         }
+
+        QFile::remove(QDir::currentPath() + "/img/" + id_man + ".jpg");
+        QFile::remove(QDir::currentPath() + "/img/prew_" + id_man + ".jpg");
 
         query.prepare("DELETE FROM manual WHERE ID=" + id_man);
         if(!query.exec())
