@@ -361,8 +361,6 @@ void MainWindow::on_pushButton_clicked()
     QDir dir;
     dir.mkdir(path);
     dir.mkdir(path + "/img");
-    dir.cd(path);
-    dir.remove("*");
 
     HTMLMaker maker;
     maker.setPath(path);

@@ -43,7 +43,8 @@ bool HTMLMaker::run(QString _id_mark)
     QString generel_page = menu;
 
     QSqlQuery query;
-    query.prepare("SELECT ID, Name FROM models WHERE ID_Mark=" + this->id_mark);
+    query.prepare("SELECT ID, Name FROM models WHERE ID_Mark=" + this->id_mark +
+                  " ORDER BY models.Name");
     if(!query.exec()) { qDebug() << "query"; return false; }
     while(query.next()) {
         QString page = makePage(query.value(0).toString());
@@ -156,7 +157,7 @@ QString HTMLMaker::makeMenu()
     query.prepare("SELECT models.Name, marks.Name, sections.Name FROM models "
                   "LEFT JOIN marks ON marks.ID=models.ID_Mark "
                   "LEFT JOIN sections ON sections.ID = marks.ID_Sections "
-                  "WHERE models.ID_Mark=" + this->id_mark);
+                  "WHERE models.ID_Mark=" + this->id_mark + " ORDER BY models.Name");
     if(!query.exec()) return "";
     int i = 0;
     while (query.next()) {
