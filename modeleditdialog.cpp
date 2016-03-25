@@ -115,25 +115,7 @@ void ModelEditDialog::on_pushButton_2_clicked()
             msg.setDefaultButton(QMessageBox::Ok);
             msg.exec();
         }
-        qDebug() << man;
-        qDebug() << name;
-        qDebug() << modelID;
-        qDebug() << query.executedQuery();
 
-
-//        if(!model->removeRow(index.row())) {
-//            qDebug() << model->lastError().text();
-//        }
-//        if(!model->submitAll())
-//        {
-//            msg.setIcon(QMessageBox::Critical);
-//            msg.setText(tr("Ошибка"));
-//            msg.setInformativeText("Не могу удалить!\n"
-//                                   + model->lastError().text());
-//            msg.setDefaultButton(QMessageBox::Ok);
-//            msg.exec();
-//        }
-//        qDebug() << model->lastError().text();
         model->select();
     }
 }
