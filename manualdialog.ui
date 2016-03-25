@@ -14,6 +14,9 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
+   <item row="5" column="2" colspan="2">
+    <widget class="QLineEdit" name="lineURLPay"/>
+   </item>
    <item row="0" column="1" colspan="3">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
@@ -82,27 +85,10 @@
    <item row="2" column="2" colspan="2">
     <widget class="QLineEdit" name="lineGenertion"/>
    </item>
-   <item row="3" column="1">
-    <widget class="QLabel" name="label_10">
-     <property name="text">
-      <string>URL скачать</string>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="2" colspan="2">
     <widget class="QLineEdit" name="lineURLDown"/>
    </item>
-   <item row="4" column="1">
-    <widget class="QLabel" name="label_11">
-     <property name="text">
-      <string>URL купить</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="2" colspan="2">
-    <widget class="QLineEdit" name="lineURLPay"/>
-   </item>
-   <item row="5" column="0" colspan="4">
+   <item row="6" column="0" colspan="4">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -112,7 +98,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" rowspan="5">
+   <item row="0" column="0" rowspan="6">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Описание</string>
@@ -222,6 +208,20 @@
        <widget class="QLineEdit" name="lineType"/>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="label_11">
+     <property name="text">
+      <string>URL купить</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLabel" name="label_10">
+     <property name="text">
+      <string>URL скачать</string>
+     </property>
     </widget>
    </item>
   </layout>
