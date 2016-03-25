@@ -49,7 +49,9 @@ bool HTMLMaker::run(QString _id_mark)
     while(query.next()) {
         QString page = makePage(query.value(0).toString());
         generel_page += page;
-        page = menu + page;
+        QString tmp = menu;
+        page = tmp.replace("<b>"+query.value(1).toString(),
+                            "<b style=\"color:red;\">"+query.value(1).toString()) + page;
         QFile file(path + "/" + query.value(1).toString() + ".html");
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) { return false; }
         QTextStream out(&file);
