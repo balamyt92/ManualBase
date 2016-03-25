@@ -67,11 +67,18 @@ bool HTMLMaker::run(QString _id_mark)
 
 QString HTMLMaker::makeMan(QList<QString> data, QString template_)
 {
-    if(!data.at(0).isEmpty()) {
-        template_ = template_.replace("%DOWN_URL%", data.at(4)); }
+    if(!data.at(4).isEmpty()) {
+        template_ = template_.replace("%PAY_URL%", data.at(4));
+    } else {
+        template_ = template_.replace("dispalay-pay", "style=\"display:none;\"");
+    }
 
-    if(!data.at(0).isEmpty()) {
-        template_ = template_.replace("%DOWN_URL%", data.at(5)); }
+    if(!data.at(5).isEmpty()) {
+        template_ = template_.replace("%DOWN_URL%", data.at(5));
+    } else {
+        template_ = template_.replace("dispalay-down", "style=\"display:none;\"");
+    }
+
 
     return template_.replace("%ЗАГОЛОВОК%", data.at(0))
                     .replace("%FOTO%", data.at(3))
