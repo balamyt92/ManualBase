@@ -29,6 +29,7 @@ ManualDialog::~ManualDialog()
 
 void ManualDialog::addManual(QString id_model)
 {
+    // мапим
     currentModel = id_model;
     model->insertRow(model->rowCount());
     mapper = new QDataWidgetMapper(this);
@@ -55,10 +56,29 @@ void ManualDialog::addManual(QString id_model)
     idList << currentModel;
     modelList << query.value(0).toString();
     openToAdd = true;
+
+    // заполняем данными с прошлого ввода
+    query.prepare("SELECT * FROM manual "
+                  "WHERE ID = (SELECT MAX(ID) FROM manual)");
+    if(!query.exec()) { qDebug() << "Err: не смог получить последние данные"; }
+    while (query.next()) {
+        ui->lineName->setText(query.value(1).toString());
+        ui->plainTextDisc->setPlainText(query.value(2).toString());
+        ui->lineAutor->setText(query.value(3).toString());
+        ui->lineYear->setText(query.value(7).toString());
+        ui->lineGenertion->setText(query.value(8).toString());
+        ui->lineHouse->setText(query.value(9).toString());
+        ui->lineCountList->setText(query.value(10).toString());
+        ui->lineSize->setText(query.value(11).toString());
+        ui->lineType->setText(query.value(12).toString());
+    }
+
+
 }
 
 void ManualDialog::saveManual()
 {
+    mapper->submit();
     model->submitAll();
     QString id_manual = model->index(model->rowCount() - 1, 0).data().toString();
     QSqlQuery query;
