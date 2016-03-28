@@ -6,8 +6,8 @@ ManualDialog::ManualDialog(QWidget *parent) :
     ui(new Ui::ManualDialog)
 {
     ui->setupUi(this);
-    genValid = new QIntValidator(0, 1000, this);
-    ui->lineGenertion->setValidator(genValid);
+//    genValid = new QIntValidator(0, 1000, this);
+//    ui->lineGenertion->setValidator(genValid);
 
     model = new QSqlTableModel(this);
     model->setEditStrategy(QSqlTableModel::OnManualSubmit);

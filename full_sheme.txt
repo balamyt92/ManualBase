@@ -24,7 +24,7 @@ CREATE TABLE manual (
     Download_url TEXT,
     Pay_url      TEXT,
     Year         TEXT,
-    Generetion   INTEGER,
+    Generetion   TEXT,
     Public_hous  TEXT,
     Count_list   TEXT,
     Size         TEXT,
