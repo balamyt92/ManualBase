@@ -267,7 +267,7 @@ void MainWindow::on_ManualsListView_doubleClicked(const QModelIndex &index)
             QFile::copy(md->getFoto(), QDir::currentPath() + "/img/" + id_man + ".jpg");
 
             QImage img(md->getFoto());
-            img = img.scaled(QSize(120, 170));
+            img = img.scaled(QSize(120, 170), Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
             if(!img.save(QDir::currentPath() + "/img/prew_" +
                      md->getIDLastAddManual() + ".jpg"))
@@ -294,7 +294,7 @@ void MainWindow::on_manAdd_clicked()
                     md->getIDLastAddManual() + ".jpg");
 
         QImage img(md->getFoto());
-        img = img.scaled(QSize(120, 170));
+        img = img.scaled(QSize(120, 170), Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
         if(!img.save(QDir::currentPath() + "/img/prew_" +
                  md->getIDLastAddManual() + ".jpg"))
