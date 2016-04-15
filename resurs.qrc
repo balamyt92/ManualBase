@@ -5,5 +5,6 @@
         <file>menu_element.html</file>
         <file>manual_template.html</file>
         <file>menu_template.html</file>
+        <file>man_last.html</file>
     </qresource>
 </RCC>

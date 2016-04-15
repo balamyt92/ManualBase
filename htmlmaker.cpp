@@ -39,30 +39,40 @@ bool HTMLMaker::run(QString _id_mark)
     QString menu = in4.readAll() + makeMenu();
     file4.close();
 
-    if(menu.isEmpty()) { qDebug() << "menu"; return false; }
-    QString generel_page = menu;
+    QFile file5(":man_last.html");
+    file5.open(QIODevice::ReadOnly | QIODevice::Text);
+    QTextStream in5(&file5);
+    QString last_template = in5.readAll();
+    file5.close();
+
 
     QSqlQuery query;
+    query.prepare("SELECT Name FROM marks WHERE ID=" + this->id_mark);
+    query.exec();
+    query.next();
+    if(menu.isEmpty()) { qDebug() << "menu"; return false; }
+    QString generel_page = menu + "<h1 class=\"western\" style=\"text-align: center;\"> <em><strong><font style=\"font-size: 16px;\">Руководства по эксплуатации, обслуживанию и ремонту " + query.value(0).toString() + "</font></strong></em></h1>";;
+
     query.prepare("SELECT ID, Name FROM models WHERE ID_Mark=" + this->id_mark +
                   " ORDER BY models.Name");
     if(!query.exec()) { qDebug() << "query"; return false; }
     while(query.next()) {
         QString page = makePage(query.value(0).toString());
         generel_page += page;
-        QString tmp = menu;
+        QString tmp = menu + "<h1 class=\"western\" style=\"text-align: center;\"> <em><strong><font style=\"font-size: 16px;\">Руководства по эксплуатации, обслуживанию и ремонту " + query.value(1).toString() + "</font></strong></em></h1>";
         page = tmp.replace("<b>"+query.value(1).toString(),
                             "<b style=\"color:red;\">"+query.value(1).toString()) + page;
         QFile file(path + "/" + query.value(1).toString() + ".html");
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) { return false; }
         QTextStream out(&file);
-        out << page;
+        out << page + last_template;
         file.close();
     }
 
     QFile file1(path + "/general.html");
     if (!file1.open(QIODevice::WriteOnly | QIODevice::Text)) { return false; }
     QTextStream out1(&file1);
-    out1 << generel_page;
+    out1 << generel_page + last_template;
     file1.close();
 
     return true;
