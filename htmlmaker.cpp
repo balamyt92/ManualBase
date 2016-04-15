@@ -78,6 +78,11 @@ QString HTMLMaker::makeMan(QList<QString> data, QString template_)
 
     if(!data.at(5).isEmpty()) {
         template_ = template_.replace("%DOWN_URL%", data.at(5));
+        QRegExp rx("*.pdf");
+        rx.setPatternSyntax(QRegExp::Wildcard);
+        if(rx.exactMatch(data.at(5))) {
+            template_ = template_.replace("target-url", "target=\"_blank\"");
+        }
     } else {
         template_ = template_.replace("dispalay-down", "style=\"display:none;\"");
     }

@@ -46,6 +46,8 @@ private slots:
 
     void on_slectModel_clicked();
 
+    void on_lineURLPay_textChanged(const QString &arg1);
+
 private:
     Ui::ManualDialog  *ui;
     QValidator        *genValid;

@@ -27,6 +27,12 @@
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="pathToFile">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="text">
            <string>путь до файла</string>
           </property>
@@ -112,7 +118,11 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="lineName"/>
+       <widget class="QLineEdit" name="lineName">
+        <property name="maxLength">
+         <number>75</number>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0" colspan="2">
        <layout class="QVBoxLayout" name="verticalLayout">

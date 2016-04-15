@@ -170,3 +170,12 @@ void ManualDialog::on_slectModel_clicked()
     dialog->exec();
     delete dialog;
 }
+
+void ManualDialog::on_lineURLPay_textChanged(const QString &arg1)
+{
+    // замена fish://user@84.22.143.158:/22/mnt/ftp
+    // на http://84.22.143.158/files
+    QString tmp = arg1;
+    tmp.replace("fish://user@84.22.143.158:/22/mnt/ftp", "http://84.22.143.158/files");
+    ui->lineURLPay->setText(tmp);
+}
