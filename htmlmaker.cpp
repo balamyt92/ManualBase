@@ -58,6 +58,7 @@ bool HTMLMaker::run(QString _id_mark)
     if(!query.exec()) { qDebug() << "query"; return false; }
     while(query.next()) {
         QString page = makePage(query.value(0).toString());
+        page = page.replace("href=\"http://www.autoinfo24.ru/upload/images/img/not_image.jpg\"", "href=\"#\"");
         generel_page += page;
         QString tmp = menu + "<h1 class=\"western\" style=\"text-align: center;\"> <em><strong><font style=\"font-size: 16px;\">Руководства по эксплуатации, обслуживанию и ремонту " + query.value(1).toString() + "</font></strong></em></h1>";
         page = tmp.replace("<b>"+query.value(1).toString(),

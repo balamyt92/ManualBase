@@ -18,6 +18,7 @@ ManualDialog::ManualDialog(QWidget *parent) :
 
     editFoto = false;
     openToAdd = false;
+    noFoto = false;
     idList.clear();
     modelList.clear();
 }
@@ -126,6 +127,12 @@ void ManualDialog::editManual(QString id_manual, QString id_model)
     }
 
     ui->models->setText(models);
+
+    if(ui->pathToFile->text() == "img/not_image.jpg") {
+        ui->checkBox->setChecked(true);
+        ui->selectFile->setDisabled(true);
+        noFoto = true;
+    }
 }
 
 void ManualDialog::updateManual()
@@ -146,6 +153,7 @@ void ManualDialog::on_selectFile_clicked()
                                                     tr("Изображения (*.png *.jpg *jpeg *.bmp)"));
     if(!fileName.isEmpty()) {
         editFoto = true;
+        noFoto = false;
         ui->pathToFile->setText(fileName);
         QGraphicsScene *scene = new QGraphicsScene(ui->graphicsView);
         scene->addPixmap(QPixmap(fileName).scaled(180, 250, Qt::KeepAspectRatio));
@@ -179,5 +187,18 @@ void ManualDialog::on_lineURLPay_textChanged(const QString &arg1)
     tmp.replace("fish://user@84.22.143.158:22/mnt/ftp", "http://84.22.143.158/files");
     if(tmp != arg1) {
         ui->lineURLPay->setText(tmp);
+    }
+}
+
+void ManualDialog::on_checkBox_toggled(bool checked)
+{
+    editFoto = true;
+    ui->selectFile->setDisabled(checked);
+    if(checked) {
+        ui->pathToFile->setText("img/not_image.jpg");
+        QGraphicsScene *scene = new QGraphicsScene(ui->graphicsView);
+        scene->addPixmap(QPixmap("img/not_image.jpg").scaled(180, 250, Qt::KeepAspectRatio));
+        ui->graphicsView->setScene(scene);
+        noFoto = true;
     }
 }

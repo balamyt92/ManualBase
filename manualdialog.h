@@ -34,6 +34,7 @@ public:
     void updateManual();
     QString getFoto() { return fileName; }
     bool isEditFoto() { return editFoto; }
+    bool isNoFoto() { return noFoto; }
 
     QString getIDLastAddManual() {
         return model->index(model->rowCount() - 1, 0).data().toString();
@@ -48,6 +49,8 @@ private slots:
 
     void on_lineURLPay_textChanged(const QString &arg1);
 
+    void on_checkBox_toggled(bool checked);
+
 private:
     Ui::ManualDialog  *ui;
     QValidator        *genValid;
@@ -57,6 +60,7 @@ private:
     QString            fileName;
     bool               editFoto;
     bool               openToAdd;
+    bool               noFoto;
     QStringList        modelList;
     QStringList        idList;
 };

@@ -262,21 +262,25 @@ void MainWindow::on_ManualsListView_doubleClicked(const QModelIndex &index)
         manModel->select();
 
         if(md->isEditFoto()) {
-            QFile::remove(QDir::currentPath() + "/img/" + id_man + ".jpg");
-            QFile::remove(QDir::currentPath() + "/img/prew_" + id_man + ".jpg");
-            QFile::copy(md->getFoto(), QDir::currentPath() + "/img/" + id_man + ".jpg");
+            if(md->isNoFoto()) {
+                md->setPathToFile("img/not_image.jpg", "img/not_image.jpg");
+            } else {
+                QFile::remove(QDir::currentPath() + "/img/" + id_man + ".jpg");
+                QFile::remove(QDir::currentPath() + "/img/prew_" + id_man + ".jpg");
+                QFile::copy(md->getFoto(), QDir::currentPath() + "/img/" + id_man + ".jpg");
 
-            QImage img(md->getFoto());
-            img = img.scaled(QSize(120, 170), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                QImage img(md->getFoto());
+                img = img.scaled(QSize(120, 170), Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-            if(!img.save(QDir::currentPath() + "/img/prew_" +
-                     md->getIDLastAddManual() + ".jpg"))
-                qDebug() << "Fail!!!!!";
+                if(!img.save(QDir::currentPath() + "/img/prew_" +
+                         md->getIDLastAddManual() + ".jpg"))
+                    qDebug() << "Fail!!!!!";
 
-            md->setPathToFile("img/" + md->getIDLastAddManual() + ".jpg",
-                              "img/prew_" + md->getIDLastAddManual() + ".jpg");
+//                md->setPathToFile("img/" + md->getIDLastAddManual() + ".jpg",
+//                                  "img/prew_" + md->getIDLastAddManual() + ".jpg");
 
-            md->setPathToFile("img/" + id_man + ".jpg", "/img/prew_" + id_man + ".jpg");
+                md->setPathToFile("img/" + id_man + ".jpg", "/img/prew_" + id_man + ".jpg");
+            }
         }
     }
     delete md;
@@ -290,18 +294,22 @@ void MainWindow::on_manAdd_clicked()
     {
         md->saveManual();
         manModel->select();
-        QFile::copy(md->getFoto(), QDir::currentPath() + "/img/" +
-                    md->getIDLastAddManual() + ".jpg");
+        if(md->isNoFoto()) {
+            md->setPathToFile("img/not_image.jpg", "img/not_image.jpg");
+        } else {
+            QFile::copy(md->getFoto(), QDir::currentPath() + "/img/" +
+                        md->getIDLastAddManual() + ".jpg");
 
-        QImage img(md->getFoto());
-        img = img.scaled(QSize(120, 170), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            QImage img(md->getFoto());
+            img = img.scaled(QSize(120, 170), Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-        if(!img.save(QDir::currentPath() + "/img/prew_" +
-                 md->getIDLastAddManual() + ".jpg"))
-            qDebug() << "Fail!!!!!";
+            if(!img.save(QDir::currentPath() + "/img/prew_" +
+                     md->getIDLastAddManual() + ".jpg"))
+                qDebug() << "Fail!!!!!";
 
-        md->setPathToFile("img/" + md->getIDLastAddManual() + ".jpg",
-                          "img/prew_" + md->getIDLastAddManual() + ".jpg");
+            md->setPathToFile("img/" + md->getIDLastAddManual() + ".jpg",
+                              "img/prew_" + md->getIDLastAddManual() + ".jpg");
+        }
     }
     delete md;
 }
