@@ -28,7 +28,7 @@ ManualDialog::~ManualDialog()
     delete ui;
 }
 
-void ManualDialog::addManual(QString id_model)
+void ManualDialog::addManual(QString id_model, bool copy, int id_copy)
 {
     // мапим
     currentModel = id_model;
@@ -58,10 +58,15 @@ void ManualDialog::addManual(QString id_model)
     modelList << query.value(0).toString();
     openToAdd = true;
 
+    if(!copy) {
     // заполняем данными с прошлого ввода
     query.prepare("SELECT * FROM manual "
                   "WHERE ID = (SELECT MAX(ID) FROM manual)");
-    if(!query.exec()) { qDebug() << "Err: не смог получить последние данные"; }
+    } else {
+        query.prepare("SELECT * FROM manual "
+                      "WHERE ID = " + QString::number(id_copy));
+    }
+    if(!query.exec()) { qDebug() << "Err: не смог получить данные"; }
     while (query.next()) {
         ui->lineName->setText(query.value(1).toString());
         ui->plainTextDisc->setPlainText(query.value(2).toString());
@@ -72,6 +77,17 @@ void ManualDialog::addManual(QString id_model)
         ui->lineCountList->setText(query.value(10).toString());
         ui->lineSize->setText(query.value(11).toString());
         ui->lineType->setText(query.value(12).toString());
+        if(copy) {
+            ui->lineURLDown->setText(query.value(5).toString());
+            ui->lineURLPay->setText(query.value(6).toString());
+            fileName = query.value(4).toString();
+            ui->pathToFile->setText(fileName);
+            editFoto = true;
+            noFoto = false;
+            QGraphicsScene *scene = new QGraphicsScene(ui->graphicsView);
+            scene->addPixmap(QPixmap(fileName).scaled(180, 250, Qt::KeepAspectRatio));
+            ui->graphicsView->setScene(scene);
+        }
     }
 
 

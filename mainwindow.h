@@ -50,6 +50,8 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_manCopy_clicked();
+
 private:
     Ui::MainWindow              *ui;
     QSqlTableModel              *sectionModel;
@@ -60,6 +62,8 @@ private:
     QString                     currentMark;
     QString                     currentModel;
     QString                     rootURL;
+    bool                        copyMan;
+    int                         copyIdMan;
 
     void saveToFile(QString content, QString fileName);
 

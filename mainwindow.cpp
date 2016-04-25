@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     rootURL = "http://www.autoinfo24.ru/rukovodstva-po-remontu/";
+    copyMan = false;
 
     DataBase *db = new DataBase(this);
     if(!db->connectToBase()) {
@@ -289,7 +290,7 @@ void MainWindow::on_ManualsListView_doubleClicked(const QModelIndex &index)
 void MainWindow::on_manAdd_clicked()
 {
     ManualDialog *md = new ManualDialog(this);
-    md->addManual(currentModel);
+    md->addManual(currentModel, copyMan, copyIdMan);
     if(md->exec() == QDialog::Accepted)
     {
         md->saveManual();
@@ -384,4 +385,15 @@ void MainWindow::saveToFile(QString content, QString fileName)
     QTextStream out(&file);
     out << content;
     file.close();
+}
+
+void MainWindow::on_manCopy_clicked()
+{
+    QModelIndex index = ui->ManualsListView->currentIndex();
+    if(!index.isValid())
+        return;
+
+    copyMan = true;
+    copyIdMan = manModel->index(index.row(), 1).data().toInt();
+    ui->statusBar->showMessage(tr("Скопировано!"));
 }
