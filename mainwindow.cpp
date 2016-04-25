@@ -293,6 +293,8 @@ void MainWindow::on_manAdd_clicked()
     md->addManual(currentModel, copyMan, copyIdMan);
     if(md->exec() == QDialog::Accepted)
     {
+        copyMan = false;
+        ui->statusBar->showMessage("");
         md->saveManual();
         manModel->select();
         if(md->isNoFoto()) {
