@@ -29,7 +29,7 @@ public:
     explicit ManualDialog(QWidget *parent = 0);
     ~ManualDialog();
     void addManual(QString id_model, bool copy, int id_copy);
-    void saveManual();
+    void saveManual(QString id_mark, QString id_model);
     void editManual(QString id_manual, QString id_model);
     void updateManual();
     QString getFoto() { return fileName; }
