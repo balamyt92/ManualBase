@@ -33,11 +33,26 @@ bool HTMLMaker::run(QString _id_mark)
     this->man_template = in3.readAll();
     file3.close();
 
+    QString menu = "";
+    QSqlQuery query;
+
+
     QFile file4(":style.css");
     file4.open(QIODevice::ReadOnly | QIODevice::Text);
     QTextStream in4(&file4);
-    QString menu = in4.readAll() + makeMenu();
-    file4.close();
+    // если у нас нет моделей то менюшка не нужна
+    query.prepare("SELECT COUNT(*) FROM models WHERE ID_Mark=" + id_mark);
+    query.exec();
+    query.next();
+    bool HAVE_models = query.value(0).toBool();
+    if(HAVE_models) {
+        menu = in4.readAll() + makeMenu();
+        file4.close();
+        if(menu.isEmpty()) { qDebug() << "Ошибка при генерации меню"; return false;}
+    } else {
+        // сохраняем в меню только стили без генерации кнопок
+        menu = in4.readAll();
+    }
 
     QFile file5(":man_last.html");
     file5.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -45,29 +60,35 @@ bool HTMLMaker::run(QString _id_mark)
     QString last_template = in5.readAll();
     file5.close();
 
-
-    QSqlQuery query;
+    // получаем имя марки
     query.prepare("SELECT Name FROM marks WHERE ID=" + this->id_mark);
     query.exec();
     query.next();
-    if(menu.isEmpty()) { qDebug() << "menu"; return false; }
+
     QString generel_page = menu + "<h1 class=\"western\" style=\"text-align: center;\"> <em><strong><font style=\"font-size: 16px;\">Руководства по эксплуатации, обслуживанию и ремонту " + query.value(0).toString() + "</font></strong></em></h1>";;
 
-    query.prepare("SELECT ID, Name FROM models WHERE ID_Mark=" + this->id_mark +
-                  " ORDER BY models.Name");
-    if(!query.exec()) { qDebug() << "query"; return false; }
-    while(query.next()) {
-        QString page = makePage(query.value(0).toString());
+    // если есть модели то генерим странички под них
+    if(HAVE_models) {
+        query.prepare("SELECT ID, Name FROM models WHERE ID_Mark=" + this->id_mark +
+                      " ORDER BY models.Name");
+        if(!query.exec()) { qDebug() << "query"; return false; }
+        while(query.next()) {
+            QString page = makePage(query.value(0).toString(), id_mark);
+            page = page.replace("href=\"http://www.autoinfo24.ru/upload/images/img/not_image.jpg\"", "href=\"#\"");
+            generel_page += page;
+            QString tmp = menu + "<h1 class=\"western\" style=\"text-align: center;\"> <em><strong><font style=\"font-size: 16px;\">Руководства по эксплуатации, обслуживанию и ремонту " + query.value(1).toString() + "</font></strong></em></h1>";
+            page = tmp.replace("<b>"+query.value(1).toString(),
+                                "<b style=\"color:red;\">"+query.value(1).toString()) + page;
+            QFile file(path + "/" + query.value(1).toString() + ".html");
+            if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) { return false; }
+            QTextStream out(&file);
+            out << page + last_template;
+            file.close();
+        }
+    } else {
+        QString page = makePage("0", id_mark);
         page = page.replace("href=\"http://www.autoinfo24.ru/upload/images/img/not_image.jpg\"", "href=\"#\"");
         generel_page += page;
-        QString tmp = menu + "<h1 class=\"western\" style=\"text-align: center;\"> <em><strong><font style=\"font-size: 16px;\">Руководства по эксплуатации, обслуживанию и ремонту " + query.value(1).toString() + "</font></strong></em></h1>";
-        page = tmp.replace("<b>"+query.value(1).toString(),
-                            "<b style=\"color:red;\">"+query.value(1).toString()) + page;
-        QFile file(path + "/" + query.value(1).toString() + ".html");
-        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) { return false; }
-        QTextStream out(&file);
-        out << page + last_template;
-        file.close();
     }
 
     QFile file1(path + "/general.html");
@@ -111,14 +132,14 @@ QString HTMLMaker::makeMan(QList<QString> data, QString template_)
                     .replace("%SIZE%", data.at(10));
 }
 
-QString HTMLMaker::makePage(QString id_model)
+QString HTMLMaker::makePage(QString id_model, QString id_mark)
 {
     QString page;
     QSqlQuery query;
     query.prepare("SELECT manual.*  FROM manualtomodel "
                   "LEFT JOIN manual ON manualtomodel.ID_Man = manual.ID "
-                  "WHERE ID_Model=" + id_model + " "
-                  "ORDER BY manual.Generetion");
+                  "WHERE ID_Model=" + id_model + " AND ID_Mark=" + id_mark +
+                  " ORDER BY manual.Generetion");
     if(!query.exec()) goto err;
 
     while (query.next()) {
