@@ -325,8 +325,13 @@ void MainWindow::on_manAdd_clicked()
                      md->getIDLastAddManual() + ".jpg"))
                 qDebug() << "Fail!!!!!";
 
-            md->setPathToFile("img/" + md->getIDLastAddManual() + ".jpg",
-                              "img/prew_" + md->getIDLastAddManual() + ".jpg");
+            QSqlQuery update;
+            update.prepare("UPDATE manual SET IMG=\'img/" + md->getIDLastAddManual() + ".jpg\'," +
+                                             "IMG_prew=\'img/prew_" + md->getIDLastAddManual() + ".jpg\' " +
+                                             "WHERE ID=(SELECT MAX(ID) FROM manual)");
+            update.exec();
+//            md->setPathToFile("img/" + md->getIDLastAddManual() + ".jpg",
+//                              "img/prew_" + md->getIDLastAddManual() + ".jpg");
         }
     }
     delete md;

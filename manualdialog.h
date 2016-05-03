@@ -37,7 +37,12 @@ public:
     bool isNoFoto() { return noFoto; }
 
     QString getIDLastAddManual() {
-        return model->index(model->rowCount() - 1, 0).data().toString();
+        QSqlQuery last;
+        last.prepare("SELECT MAX(ID) FROM manual");
+        last.exec();
+        last.next();
+        return last.value(0).toString();
+        //model->index(model->rowCount() - 1, 0).data().toString();
     }
 
     void setPathToFile(QString path, QString path_prew);
