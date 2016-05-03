@@ -102,8 +102,14 @@ void ManualDialog::saveManual(QString id_mark, QString id_model)
 {
     mapper->submit();
     model->submitAll();
-    QString id_manual = model->index(model->rowCount() - 1, 0).data().toString();
     QSqlQuery query;
+    query.prepare("SELECT ID FROM manual "
+                  "WHERE ID = (SELECT MAX(ID) FROM manual)");
+    query.exec();
+    query.next();
+
+    QString id_manual = query.value(0).toString();
+            //model->index(model->rowCount() - 1, 0).data().toString();
     qDebug() << id_model;
     if(id_model == "0") {
         query.prepare("INSERT INTO manualtomodel (ID_Man, ID_Model, ID_Mark) VALUES("+
