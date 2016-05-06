@@ -29,7 +29,7 @@ public:
     explicit ManualDialog(QWidget *parent = 0);
     ~ManualDialog();
     void addManual(QString id_model, bool copy, int id_copy);
-    void saveManual();
+    void saveManual(QString id_mark, QString id_model);
     void editManual(QString id_manual, QString id_model);
     void updateManual();
     QString getFoto() { return fileName; }
@@ -37,7 +37,12 @@ public:
     bool isNoFoto() { return noFoto; }
 
     QString getIDLastAddManual() {
-        return model->index(model->rowCount() - 1, 0).data().toString();
+        QSqlQuery last;
+        last.prepare("SELECT MAX(ID) FROM manual");
+        last.exec();
+        last.next();
+        return last.value(0).toString();
+        //model->index(model->rowCount() - 1, 0).data().toString();
     }
 
     void setPathToFile(QString path, QString path_prew);

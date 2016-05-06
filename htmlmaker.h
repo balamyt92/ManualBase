@@ -28,7 +28,7 @@ public:
 
 private:
     QString makeMan(QList<QString> data, QString template_);
-    QString makePage(QString id_model);
+    QString makePage(QString id_model, QString id_mark);
     QString makeMenu();
     bool saveImage(QString id_man);
 signals:

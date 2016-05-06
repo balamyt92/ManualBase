@@ -50,19 +50,24 @@ void ManualDialog::addManual(QString id_model, bool copy, int id_copy)
     mapper->addMapping(ui->lineType, 12);
     mapper->toLast();
 
-    QSqlQuery query("SELECT Name FROM models WHERE ID=" + currentModel);
-    query.next();
-    ui->models->setText(query.value(0).toString());
+    QSqlQuery query;
+    if(currentModel != "0") {
+        query.prepare("SELECT Name FROM models WHERE ID=" + currentModel);
+        query.exec();
+        query.next();
+        ui->models->setText(query.value(0).toString());
 
-    idList << currentModel;
-    modelList << query.value(0).toString();
+        idList << currentModel;
+        modelList << query.value(0).toString();
+    }
     openToAdd = true;
 
     if(!copy) {
-    // заполняем данными с прошлого ввода
-    query.prepare("SELECT * FROM manual "
-                  "WHERE ID = (SELECT MAX(ID) FROM manual)");
+        // заполняем данными с прошлого ввода
+        query.prepare("SELECT * FROM manual "
+                      "WHERE ID = (SELECT MAX(ID) FROM manual)");
     } else {
+        // иначе скопированными
         query.prepare("SELECT * FROM manual "
                       "WHERE ID = " + QString::number(id_copy));
     }
@@ -93,19 +98,29 @@ void ManualDialog::addManual(QString id_model, bool copy, int id_copy)
 
 }
 
-void ManualDialog::saveManual()
+void ManualDialog::saveManual(QString id_mark, QString id_model)
 {
     mapper->submit();
     model->submitAll();
-    QString id_manual = model->index(model->rowCount() - 1, 0).data().toString();
     QSqlQuery query;
-    query.prepare("SELECT ID_Mark FROM models WHERE ID=" + currentModel);
+    query.prepare("SELECT ID FROM manual "
+                  "WHERE ID = (SELECT MAX(ID) FROM manual)");
     query.exec();
     query.next();
-    QString mark = query.value(0).toString();
-    query.prepare("INSERT INTO manualtomodel (ID_Man, ID_Model, ID_Mark) VALUES("+
-                  id_manual +","+ currentModel +","+ mark +")");
-    query.exec();
+
+    QString id_manual = query.value(0).toString();
+            //model->index(model->rowCount() - 1, 0).data().toString();
+    qDebug() << id_model;
+    if(id_model == "0") {
+        query.prepare("INSERT INTO manualtomodel (ID_Man, ID_Model, ID_Mark) VALUES("+
+                      id_manual +","+ id_model +", " + id_mark + ")");
+    } else {
+        query.prepare("INSERT INTO manualtomodel (ID_Man, ID_Model, ID_Mark) VALUES("+
+                      id_manual +","+ currentModel +","+ id_mark +")");
+    }
+    if(!query.exec()) {
+        qDebug() << "Errr!!";
+    }
 }
 
 void ManualDialog::editManual(QString id_manual, QString id_model)

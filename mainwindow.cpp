@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     rootURL = "http://www.autoinfo24.ru/rukovodstva-po-remontu/";
     copyMan = false;
+    currentModel = "0";
 
     DataBase *db = new DataBase(this);
     if(!db->connectToBase()) {
@@ -63,6 +64,11 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->ManualsListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
         ui->groupBox_4->setEnabled(false);
     }
+
+    QSqlQuery query;
+    query.prepare("INSERT INTO models (ID, Name, ID_Mark) VALUES(0, 'ALL', NULL)");
+    query.exec();
+
 }
 
 MainWindow::~MainWindow()
@@ -104,6 +110,15 @@ void MainWindow::on_MarksListView_clicked(const QModelIndex &index)
     else {
         ui->groupBox_3->setEnabled(true);
     }
+    manModel->setFilter("ID_Mark=" + currentMark + " AND ID_Model=0");
+    if(!manModel->select()) {
+        QString err = tr("Не могу считать список мануалов! <br>") + manModel->lastError().text();
+        QMessageBox::critical(this, tr("Ошибка!"), err);
+    }
+    else {
+        ui->groupBox_4->setEnabled(true);
+    }
+    currentModel = "0";
 }
 
 void MainWindow::on_markDel_clicked()
@@ -268,18 +283,15 @@ void MainWindow::on_ManualsListView_doubleClicked(const QModelIndex &index)
             } else {
                 QFile::remove(QDir::currentPath() + "/img/" + id_man + ".jpg");
                 QFile::remove(QDir::currentPath() + "/img/prew_" + id_man + ".jpg");
-                QFile::copy(md->getFoto(), QDir::currentPath() + "/img/" + id_man + ".jpg");
+                QFile::copy(md->getFoto(), QDir::currentPath() + "/img/" +
+                            id_man + ".jpg");
 
                 QImage img(md->getFoto());
                 img = img.scaled(QSize(120, 170), Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
                 if(!img.save(QDir::currentPath() + "/img/prew_" +
-                         md->getIDLastAddManual() + ".jpg"))
+                         id_man + ".jpg"))
                     qDebug() << "Fail!!!!!";
-
-//                md->setPathToFile("img/" + md->getIDLastAddManual() + ".jpg",
-//                                  "img/prew_" + md->getIDLastAddManual() + ".jpg");
-
                 md->setPathToFile("img/" + id_man + ".jpg", "/img/prew_" + id_man + ".jpg");
             }
         }
@@ -295,7 +307,7 @@ void MainWindow::on_manAdd_clicked()
     {
         copyMan = false;
         ui->statusBar->showMessage("");
-        md->saveManual();
+        md->saveManual(currentMark, currentModel);
         manModel->select();
         if(md->isNoFoto()) {
             md->setPathToFile("img/not_image.jpg", "img/not_image.jpg");
@@ -310,8 +322,13 @@ void MainWindow::on_manAdd_clicked()
                      md->getIDLastAddManual() + ".jpg"))
                 qDebug() << "Fail!!!!!";
 
-            md->setPathToFile("img/" + md->getIDLastAddManual() + ".jpg",
-                              "img/prew_" + md->getIDLastAddManual() + ".jpg");
+            QSqlQuery update;
+            update.prepare("UPDATE manual SET IMG=\'img/" + md->getIDLastAddManual() + ".jpg\'," +
+                                             "IMG_prew=\'img/prew_" + md->getIDLastAddManual() + ".jpg\' " +
+                                             "WHERE ID=(SELECT MAX(ID) FROM manual)");
+            update.exec();
+//            md->setPathToFile("img/" + md->getIDLastAddManual() + ".jpg",
+//                              "img/prew_" + md->getIDLastAddManual() + ".jpg");
         }
     }
     delete md;
@@ -368,6 +385,7 @@ void MainWindow::on_pushButton_clicked()
         return;
 
     QString id_mark = markModel->index(index.row(), 0).data().toString();
+    qDebug() << id_mark;
     QString path = QDir::currentPath() + "/out";
     QDir dir;
     dir.mkdir(path);
