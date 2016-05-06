@@ -97,6 +97,9 @@ bool HTMLMaker::run(QString _id_mark)
     out1 << generel_page + last_template;
     file1.close();
 
+
+    query.prepare("DROP TABLE tmp");
+    query.exec();
     return true;
 }
 

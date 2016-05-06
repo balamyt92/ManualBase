@@ -388,6 +388,7 @@ void MainWindow::on_pushButton_clicked()
         return;
 
     QString id_mark = markModel->index(index.row(), 0).data().toString();
+    qDebug() << id_mark;
     QString path = QDir::currentPath() + "/out";
     QDir dir;
     dir.mkdir(path);
