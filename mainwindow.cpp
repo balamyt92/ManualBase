@@ -283,18 +283,15 @@ void MainWindow::on_ManualsListView_doubleClicked(const QModelIndex &index)
             } else {
                 QFile::remove(QDir::currentPath() + "/img/" + id_man + ".jpg");
                 QFile::remove(QDir::currentPath() + "/img/prew_" + id_man + ".jpg");
-                QFile::copy(md->getFoto(), QDir::currentPath() + "/img/" + id_man + ".jpg");
+                QFile::copy(md->getFoto(), QDir::currentPath() + "/img/" +
+                            id_man + ".jpg");
 
                 QImage img(md->getFoto());
                 img = img.scaled(QSize(120, 170), Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
                 if(!img.save(QDir::currentPath() + "/img/prew_" +
-                         md->getIDLastAddManual() + ".jpg"))
+                         id_man + ".jpg"))
                     qDebug() << "Fail!!!!!";
-
-//                md->setPathToFile("img/" + md->getIDLastAddManual() + ".jpg",
-//                                  "img/prew_" + md->getIDLastAddManual() + ".jpg");
-
                 md->setPathToFile("img/" + id_man + ".jpg", "/img/prew_" + id_man + ".jpg");
             }
         }
