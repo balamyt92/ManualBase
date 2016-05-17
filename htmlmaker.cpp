@@ -35,6 +35,8 @@ bool HTMLMaker::run(QString _id_mark)
 
     QString menu = "";
     QSqlQuery query;
+    query.prepare("DROP TABLE tmp");
+    query.exec();
 
 
     QFile file4(":style.css");
