@@ -142,7 +142,7 @@ QString HTMLMaker::makePage(QString id_model, QString id_mark)
     query.prepare("SELECT manual.*  FROM manualtomodel "
                   "LEFT JOIN manual ON manualtomodel.ID_Man = manual.ID "
                   "WHERE ID_Model=" + id_model + " AND ID_Mark=" + id_mark +
-                  " ORDER BY manual.Generetion");
+                  " ORDER BY manual.Generetion, manual.Name");
     if(!query.exec()) goto err;
 
     while (query.next()) {
