@@ -179,9 +179,7 @@ QString HTMLMaker::makeMenu()
 
     query.prepare("CREATE TABLE tmp(Name TEXT, URL TEXT)");
     query.exec();
-    QSqlTableModel *model = new QSqlTableModel(dialog);
-    model->setTable("tmp");
-    model->select();
+
 
     // create window to accepted for user
     QDialog *dialog = new QDialog(qobject_cast<QWidget*>(this->parent()));
@@ -196,6 +194,10 @@ QString HTMLMaker::makeMenu()
     layout->addWidget(view);
     layout->addWidget(box);
     dialog->setLayout(layout);
+
+    QSqlTableModel *model = new QSqlTableModel(dialog);
+    model->setTable("tmp");
+    model->select();
 
     // select data
     query.prepare("SELECT models.Name, marks.Name, sections.Name FROM models "
