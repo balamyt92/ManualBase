@@ -35,6 +35,8 @@ bool HTMLMaker::run(QString _id_mark)
 
     QString menu = "";
     QSqlQuery query;
+    query.prepare("DROP TABLE tmp");
+    query.exec();
 
 
     QFile file4(":style.css");
@@ -170,6 +172,17 @@ QString HTMLMaker::makePage(QString id_model, QString id_mark)
 #include <QWidget>
 QString HTMLMaker::makeMenu()
 {
+    // clear tmp table
+    QSqlQuery query;
+    query.prepare("DROP TABLE tmp");
+    query.exec();
+
+    query.prepare("CREATE TABLE tmp(Name TEXT, URL TEXT)");
+    query.exec();
+    QSqlTableModel *model = new QSqlTableModel(dialog);
+    model->setTable("tmp");
+    model->select();
+
     // create window to accepted for user
     QDialog *dialog = new QDialog(qobject_cast<QWidget*>(this->parent()));
     QTableView *view = new QTableView(dialog);
@@ -183,17 +196,6 @@ QString HTMLMaker::makeMenu()
     layout->addWidget(view);
     layout->addWidget(box);
     dialog->setLayout(layout);
-
-    // clear tmp table
-    QSqlQuery query;
-    query.prepare("DROP TABLE tmp");
-    query.exec();
-
-    query.prepare("CREATE TABLE tmp(Name TEXT, URL TEXT)");
-    query.exec();
-    QSqlTableModel *model = new QSqlTableModel(dialog);
-    model->setTable("tmp");
-    model->select();
 
     // select data
     query.prepare("SELECT models.Name, marks.Name, sections.Name FROM models "
