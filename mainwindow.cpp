@@ -311,6 +311,9 @@ void MainWindow::on_manAdd_clicked()
         manModel->select();
         if(md->isNoFoto()) {
             md->setPathToFile("img/not_image.jpg", "img/not_image.jpg");
+            QSqlQuery update;
+            update.prepare("UPDATE manual SET IMG=\'img/not_image.jpg\', IMG_prew=\'img/not_image.jpg\' WHERE ID=(SELECT MAX(ID) FROM manual)");
+            if(!update.exec()) qDebug() << "Fail! save foto " << update.lastError().text();
         } else {
             QFile::copy(md->getFoto(), QDir::currentPath() + "/img/" +
                         md->getIDLastAddManual() + ".jpg");
@@ -326,9 +329,9 @@ void MainWindow::on_manAdd_clicked()
             update.prepare("UPDATE manual SET IMG=\'img/" + md->getIDLastAddManual() + ".jpg\'," +
                                              "IMG_prew=\'img/prew_" + md->getIDLastAddManual() + ".jpg\' " +
                                              "WHERE ID=(SELECT MAX(ID) FROM manual)");
-            update.exec();
-//            md->setPathToFile("img/" + md->getIDLastAddManual() + ".jpg",
-//                              "img/prew_" + md->getIDLastAddManual() + ".jpg");
+            if(!update.exec()) qDebug() << "Fail! save foto " << update.lastError().text();
+            md->setPathToFile("img/" + md->getIDLastAddManual() + ".jpg",
+                              "img/prew_" + md->getIDLastAddManual() + ".jpg");
         }
     }
     delete md;
