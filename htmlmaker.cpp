@@ -124,6 +124,10 @@ QString HTMLMaker::makeMan(QList<QString> data, QString template_)
         template_ = template_.replace("dispalay-down", "style=\"display:none;\"");
     }
 
+    if(data.at(12) == "img/not_image.jpg") {
+        template_ = template_.replace("<a href=\"http://www.autoinfo24.ru/upload/images/%FOTO%\"><span class=\"highslide\"><img class=\"prew_foto\" alt=\"\" src=\"/upload/images/%PREW_FOTO%\" title=\"Увеличить\"></span></a>",
+                                      "<span class=\"highslide\"><img class=\"prew_foto\" alt=\"\" src=\"/upload/images/%PREW_FOTO%\" title=\"Увеличить\"></span>");
+    }
 
     return template_.replace("%ЗАГОЛОВОК%", data.at(0))
                     .replace("%FOTO%", data.at(3))
